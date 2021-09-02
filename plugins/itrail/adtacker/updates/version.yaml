@@ -1,0 +1,32 @@
+1.0.1:
+    - 'Initialize plugin.'
+1.0.2:
+    - 'Created table itrail_adtacker_products'
+    - builder_table_create_itrail_adtacker_products.php
+1.0.3:
+    - 'Created table itrail_adtacker_slides'
+    - builder_table_create_itrail_adtacker_slides.php
+1.0.4:
+    - 'Created table itrail_adtacker_transactions'
+    - builder_table_create_itrail_adtacker_transactions.php
+1.0.5:
+    - 'Created table itrail_adtacker_transaction_types'
+    - builder_table_create_itrail_adtacker_transaction_types.php
+1.0.6:
+    - 'Created table itrail_adtacker_withdraw_requests'
+    - builder_table_create_itrail_adtacker_withdraw_requests.php
+1.0.7:
+    - 'Created table itrail_adtacker_banks'
+    - builder_table_create_itrail_adtacker_banks.php
+1.0.8:
+    - 'Created table itrail_adtacker_order_statuses'
+    - builder_table_create_itrail_adtacker_order_statuses.php
+1.0.9:
+    - 'Created table itrail_adtacker_orders'
+    - builder_table_create_itrail_adtacker_orders.php
+1.0.10:
+    - 'Created table itrail_adtacker_order_items'
+    - builder_table_create_itrail_adtacker_order_items.php
+1.0.11:
+    - 'Update table backend_users'
+    - builder_table_update_backend_users.php

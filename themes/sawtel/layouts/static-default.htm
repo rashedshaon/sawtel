@@ -1,0 +1,52 @@
+[staticPage]
+useContent = 1
+default = 0
+
+[staticMenu]
+code = "main-menu"
+==
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <title>Sawtel - {{ this.page.title }}</title>
+    <meta name="description" content="{{ this.page.meta_description }}">
+    <meta name="title" content="{{ this.page.meta_title }}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ 'assets/css/all.min.css' | theme }}">
+    <link rel="stylesheet" href="{{ 'assets/css/bootstrap.min.css' | theme }}">
+    <link rel="stylesheet" href="{{ 'assets/scss/style.css' | theme }}">
+    {% styles %}
+</head>
+
+<body>
+    {% partial 'header' %}
+
+    <section class="content-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="content-box">
+                        {% page %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+    {% partial 'footer' %}
+
+    <script src="{{ 'assets/js/jquery-3.3.1.min.js' | theme }}"></script>
+    <script src="{{ 'assets/js/bootstrap.min.js' | theme }}"></script>
+    <script src="{{ 'assets/js/script.js' | theme }}"></script>
+    {% framework extras %}
+    {% scripts %}
+</body>
+
+</html>

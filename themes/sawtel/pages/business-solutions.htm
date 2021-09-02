@@ -1,0 +1,136 @@
+url = "/business-solutions"
+layout = "default"
+title = "Business Solutions"
+
+[blogPosts]
+pageNumber = "{{ :page }}"
+postsPerPage = 6
+noPostsMessage = "No posts found"
+sortOrder = "published_at desc"
+categoryPage = "solutions"
+postPage = "single-solution"
+==
+<!-- Page feature Start -->
+    <section class='page-feature pt-0'>
+        <div class="breadcrumbs-area">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6 col-sm-6 col-12">
+                        <h5>Business Solutions</h5>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-12">
+                        <div class="breadcrumbs">
+                            <a href="{{ url('/') }}">Home</a>
+                            <span>Business Solutions</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-feat-inner">
+            <div class='container'>
+                <div class='row'>
+                    <div class='col-12'>
+                        <h2 class="page-title">Business Solutions</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <!-- Page feature End -->
+
+
+    <section class="content-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="content-box bg-yellow p-4 mb-5">
+                        <h4>Business Intelligence</h4>
+                    </div>
+                    <div class="content-box">
+                        <p class="mb-0">Atque, ad expedita qui minus. Impedit dolorum soluta beatae
+                            enim quaerat repudiandae labore ut, distinctio ullam, ex culpa magni id laudantium, maiores
+                            architecto. Voluptatum pariatur necessitatibus eum quae assumenda, minus totam nam libero
+                            repellat dignissimos rerum ipsam!</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="content-box">
+                        <h6 class="mb-2">Our BIS is offerd in various applications such as;</h6>
+                        <ul class="list mb-5">
+                            <li class="text-capitalize">Executive information management system</li>
+                            <li class="text-capitalize">Health information management system and hospital management system</li>
+                            <li class="text-capitalize">School management system for secondary School and universities</li>
+                            <li class="text-capitalize">Humna resource management system</li>
+                            <li class="text-capitalize">Enterprise resource planing and management system</li>
+                            <li class="text-capitalize">Learning management system</li>
+                        </ul>
+                        <p class="mb-0">The best art of our Business Intellient Solution is that it's offerd as Software as Service (Sass) which allow organizations to pay fees per users/month.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="content-box">
+                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Non enim similique qui, velit provident eaque accusantium minima consequatur corrupti esse est animi quaerat ipsum explicabo sed delectus, ratione dolorem officia. Unde, rerum eaque reprehenderit inventore quaerat est corporis veniam quibusdam. Temporibus nesciunt facilis ipsa eveniet cumque fugiat et mollitia illo!</p>
+                        <p class="mb-0">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eaque ipsum impedit accusantium, adipisci tempore qui facilis, dolore provident incidunt laboriosam odit ipsam at nostrum debitis commodi. Odit dicta ratione soluta.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 posts">
+                    <div class="row">
+                        {% set posts = blogPosts.posts %}
+
+                        {% for post in posts %}
+                        <div class="col-md-4">
+                            <div class="single-post">
+                                <figure>
+                                    <img src="{{ post.featuredPhoto(160, 106) }}" alt="{{ post.title }}">
+                                </figure>
+                                <h6><a href="{{ post.url }}">{{ post.title }}</a></h6>
+                                <a href="{{ post.title }}" class="read-more">Learn more >></a>
+                            </div>
+                        </div>
+                        {% else %}
+                            <div class="no-data">{{ __SELF__.noPostsMessage }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners section start -->
+    <section class="partners">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="partners-logo">
+                        <a href="#"><img src="{{ 'assets/images/partners/1.png' | theme }}" alt=""></a>
+                        <a href="#"><img src="{{ 'assets/images/partners/2.png' | theme }}" alt=""></a>
+                        <a href="#"><img src="{{ 'assets/images/partners/3.png' | theme }}" alt=""></a>
+                        <a href="#"><img src="{{ 'assets/images/partners/4.png' | theme }}" alt=""></a>
+                        <a href="#"><img src="{{ 'assets/images/partners/5.png' | theme }}" alt=""></a>
+                        <a href="#"><img src="{{ 'assets/images/partners/6.png' | theme }}" alt=""></a>
+                        <a href="#"><img src="{{ 'assets/images/partners/1.png' | theme }}" alt=""></a>
+                        <a href="#"><img src="{{ 'assets/images/partners/2.png' | theme }}" alt=""></a>
+                        <a href="#"><img src="{{ 'assets/images/partners/3.png' | theme }}" alt=""></a>
+                        <a href="#"><img src="{{ 'assets/images/partners/4.png' | theme }}" alt=""></a>
+                        <a href="#"><img src="{{ 'assets/images/partners/5.png' | theme }}" alt=""></a>
+                        <a href="#"><img src="{{ 'assets/images/partners/6.png' | theme }}" alt=""></a>
+                        <a href="#"><img src="{{ 'assets/images/partners/1.png' | theme }}" alt=""></a>
+                        <a href="#"><img src="{{ 'assets/images/partners/2.png' | theme }}" alt=""></a>
+                        <a href="#"><img src="{{ 'assets/images/partners/3.png' | theme }}" alt=""></a>
+                        <a href="#"><img src="{{ 'assets/images/partners/4.png' | theme }}" alt=""></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Partners section end -->

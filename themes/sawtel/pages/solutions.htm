@@ -1,0 +1,52 @@
+title = "Solutions"
+layout = "default"
+url = "/solutions"
+
+[blogPosts]
+pageNumber = "{{ :page }}"
+categoryFilter = "{{ :slug? }}"
+postsPerPage = 10
+noPostsMessage = "No posts found"
+sortOrder = "published_at desc"
+categoryPage = "solutions"
+postPage = "single-solution"
+==
+<!-- Page feature Start -->
+<section class='page-feature pt-0'>
+    <div class="breadcrumbs-area">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 col-sm-6 col-12">
+                    <h5>Business</h5>
+                </div>
+                <div class="col-md-6 col-sm-6 col-12">
+                    <div class="breadcrumbs">
+                        <a href="{{ url('/') }}">Home</a>
+                        <span>Solutions</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Page feature End -->
+
+<!-- start -->
+<section class="solutions">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-heading">
+                    <h4>Solutions</h4>
+                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo veniam autem nulla nisi doloribus modi aliquam ea voluptatibus voluptatum nesciunt labore nihil, reprehenderit provident possimus maiores commodi quam at quia!</p>
+                </div>
+            </div>
+        </div>
+        <div class="posts">
+            <div class="row">
+                {% component 'blogPosts' %}
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end -->

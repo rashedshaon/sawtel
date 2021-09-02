@@ -1,0 +1,73 @@
+url = "/solution/:slug"
+layout = "default"
+title = "Single Solution"
+
+[blogPost]
+slug = "{{ :slug }}"
+categoryPage = "solutions"
+==
+{% set post = blogPost.post %}
+
+<!-- Page feature Start -->
+<section class='page-feature pt-0'>
+    <div class="breadcrumbs-area">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 col-sm-6 col-12">
+                    <h5>Conferencing</h5>
+                </div>
+                <div class="col-md-6 col-sm-6 col-12">
+                    <div class="breadcrumbs">
+                        <a href="{{ url('/') }}">Home</a>
+                        <a href="#">Solutions</a>
+                        <span>{{ post.title }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-feat-inner">
+        <div class='container'>
+            <div class='row'>
+                <div class='col-12'>
+                    <h2 class="page-title">{{ post.title }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- Page feature End -->
+
+
+<section class="content-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-heading bb-yellow-1x mb-5 pb-2">
+                    <h6>{{ post.title }}</h6>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {% if post.featured_images.count %}
+                    <div class="featured-images text-center">
+                        {% for image in post.featured_images %}
+                            <p>
+                                <img
+                                    data-src="{{ image.filename }}"
+                                    src="{{ image.path }}"
+                                    alt="{{ image.description }}"
+                                    style="max-width: 100%" />
+                            </p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="content-box">
+                    {{ post.content_html|raw }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

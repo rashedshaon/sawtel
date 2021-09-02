@@ -1,0 +1,8 @@
+{
+    "name": "xirosoft/xirosoft-sawtel-theme",
+    "type": "october-theme",
+    "description": "A theme for Sawtell",
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}

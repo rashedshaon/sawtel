@@ -1,0 +1,25 @@
+$themes: (
+    'light': (
+        bg-color: #eff1f5,
+        panel-bg: #fff,
+        primary: #4b5b6b,
+        secondary: #3d4859,
+        color-gray: #7d7d7d,
+        menu-color: #4b5b6b,
+    ),
+    'dark': (
+        bg-color: #182037,
+        panel-bg: #222a43,
+        primary: #fff,
+        secondary: #f1f1f1,
+        color-gray: #646a84,
+        menu-color: #646a84,
+    )
+)
+
+/**********
+ ** Uses
+@include themify($themes) {
+    propnname: themed('variable');  
+}
+**/

@@ -1,0 +1,6 @@
+plugin:
+    name: 'itrail.adtacker::lang.plugin.name'
+    description: 'itrail.adtacker::lang.plugin.description'
+    author: 'IT Rail'
+    icon: oc-icon-diamond
+    homepage: ''

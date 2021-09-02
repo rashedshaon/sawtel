@@ -1,0 +1,30 @@
+<!-- Header start -->
+<header class="header">
+    <div class="container d-flex align-items-center">
+        <a class="logo" href="{{ url('/') }}">
+            <img src="{{ 'assets/images/logo.png' | theme }}" alt="">
+        </a>
+
+        <div class="ml-auto">
+            <form class="auth-form" action="home.html">
+                <input type="text" class="form-control" placeholder="Username">
+                <input type="password" class="form-control" placeholder="Password">
+                <button type="submit">Go</button>
+
+                <a href="#">Forget Password?</a>
+                <a href="#">Register >></a>
+            </form>
+            <nav class="primary-menu">
+                <a id="mobile-menu-toggler" href="#"><i class="fas fa-bars"></i></a>
+                <ul class="main-menu">
+                    {% component 'staticMenu' %}
+                    <div class="header-btn">
+                        <a href="./contact.html" class="btn">Login</a>
+                    </div>
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+</header>
+<!-- Header end -->

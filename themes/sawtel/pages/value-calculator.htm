@@ -1,0 +1,76 @@
+title = "Value Calculator"
+layout = "default"
+url = "/value-calculator"
+==
+<!-- Page feature Start -->
+    <section class='page-feature pt-0 pb-0'>
+        <div class="breadcrumbs-area">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6 col-sm-6 col-12">
+                        <h5>Value Calculator</h5>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-12">
+                        <div class="breadcrumbs">
+                            <a href="{{ url('/') }}">Home</a>
+                            <span>Value Calculator</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Page feature End -->
+
+
+    <section class="value-calc">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="bb-yellow-1x pb-1 mb-3">Value Calculator</h4>
+                    <p>Get cost estimate and project timelines in 3 easy steps:</p>
+                </div>
+            </div>
+            <form action="value-calculator.html">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="form-group">
+                            <label for="sel-serv">1. What service(s) are you interested in?</label>
+                            <select name="sel-serv" id="sel-serv">
+                                <option value="">Select</option>
+                                <option value="">Consumer</option>
+                                <option value="">Broadband</option>
+                                <option value="">Enterprise</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="total-ppl">2. How many people are in your organisation altogether?</label>
+                            <select name="total-ppl" id="total-ppl">
+                                <option value="">Select</option>
+                                <option value="">30</option>
+                                <option value="">50</option>
+                                <option value="">100+</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sel-branch">3. How many branches/locations do you have?</label>
+                            <select name="sel-branch" id="sel-branch">
+                                <option value="">Select</option>
+                                <option value="">5</option>
+                                <option value="">6</option>
+                                <option value="">10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 offset-md-1">
+                        <div class="br-yello-1x"></div>
+                        <div class="form-group d-block">
+                            <label for="sel-branch">Email:</label>
+                            <input type="text" />
+                            <button type="submit">Calculate >></button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>

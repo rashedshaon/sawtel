@@ -1,0 +1,46 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+body {
+	color: #969CB4;
+	background-color: #fff;
+	font-family: $default;
+	font-weight: $regular;
+	font-size: 16px;
+	line-height: 22px;
+}
+a {
+	transition: all 300ms ease-in-out;
+	&:hover, &:focus {
+		text-decoration: none;
+		outline: 0px;
+	}
+	
+}
+h1, h2, h3, h4, h5, h6 {
+	font-family: $default;
+	font-weight: $bold;
+	color: #000;
+}
+
+img {
+	display: block;
+	width: 100%;
+	height: auto;	
+}
+ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+figure {
+	margin: 0;
+}
+section {
+	display: block;
+	position: relative;
+	padding: 50px 0;
+	width: 100%;
+}
