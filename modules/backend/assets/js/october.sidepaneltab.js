@@ -5,24 +5,24 @@
 +function ($) { "use strict";
 
     var SidePanelTab = function(element, options) {
-        this.options = options
-        this.$el = $(element)
-        this.init()
+        this.options = options;
+        this.$el = $(element);
+        this.init();
     }
 
     SidePanelTab.prototype.init = function() {
-        var self = this
-        this.tabOpenDelay = 200
-        this.tabOpenTimeout = undefined
-        this.panelOpenTimeout = undefined
-        this.$sideNav = $('#layout-sidenav')
-        this.$sideNavRes = $('#layout-sidenav-responsive')
-        this.$sideNavItems = $('ul li', this.$sideNav)
-        this.$sidePanelItems = $('[data-content-id]', this.$el)
-        this.sideNavWidth = $('#layout-sidenav').outerWidth()
-        this.mainNavHeight = $('#layout-mainmenu').outerHeight()
-        this.panelVisible = false
-        this.visibleItemId = false
+        var self = this;
+        this.tabOpenDelay = 200;
+        this.tabOpenTimeout = undefined;
+        this.panelOpenTimeout = undefined;
+        this.$sideNav = $('#layout-sidenav');
+        this.$sideNavRes = $('#layout-sidenav-responsive');
+        this.$sideNavItems = $('ul li', this.$sideNav);
+        this.$sidePanelItems = $('[data-content-id]', this.$el);
+        this.sideNavWidth = $('#layout-sidenav').outerWidth();
+        this.mainNavHeight = $.oc.backendCalculateTopContainerOffset();
+        this.panelVisible = false;
+        this.visibleItemId = false;
 
         this.$sideNavItems.click(function() {
             if ($(this).data('no-side-panel')) {
@@ -77,7 +77,7 @@
         $(document.body).addClass('display-side-panel')
 
         if (this.$sideNavRes.is(':visible')) {
-            this.mainNavHeight = $('#layout-mainmenu').outerHeight() + this.$sideNavRes.outerHeight();
+            this.mainNavHeight = $.oc.backendCalculateTopContainerOffset() + this.$sideNavRes.outerHeight();
         }
 
         if ($('#layout-sidenav').is(':visible')) {

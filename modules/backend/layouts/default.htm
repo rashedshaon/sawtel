@@ -20,6 +20,13 @@
 
                     <div class="layout-cell">
                         <div class="layout">
+                            <?php if ($bannerAreaContent = Block::placeholder('banner-area')): ?>
+                                <!-- Banner Area -->
+                                <div class="layout-row min-size" id="layout-banner-area">
+                                    <?= $bannerAreaContent ?>
+                                </div>
+                            <?php endif ?>
+
                             <!-- Main Menu -->
                             <?php if (!isset($hideMainMenu)): ?>
                                 <div class="layout-row min-size layout-mainmenu" id="layout-mainmenu">

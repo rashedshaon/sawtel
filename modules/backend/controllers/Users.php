@@ -4,20 +4,18 @@ use Lang;
 use Flash;
 use Backend;
 use Redirect;
-use BackendMenu;
 use BackendAuth;
 use Backend\Models\UserGroup;
-use Backend\Classes\Controller;
-use System\Classes\SettingsManager;
+use Backend\Classes\SettingsController;
 
 /**
- * Backend user controller
+ * Users controller for backend users
  *
  * @package october\backend
  * @author Alexey Bobkov, Samuel Georges
  *
  */
-class Users extends Controller
+class Users extends SettingsController
 {
     /**
      * @var array Extensions implemented by this controller.
@@ -48,6 +46,11 @@ class Users extends Controller
     public $bodyClass = 'compact-container';
 
     /**
+     * @var string settingsItemCode determines the settings code
+     */
+    public $settingsItemCode = 'administrators';
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -57,9 +60,6 @@ class Users extends Controller
         if ($this->action == 'myaccount') {
             $this->requiredPermissions = null;
         }
-
-        BackendMenu::setContext('October.System', 'system', 'users');
-        SettingsManager::setContext('October.System', 'administrators');
     }
 
     /**

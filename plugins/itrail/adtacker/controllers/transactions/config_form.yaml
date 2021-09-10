@@ -1,0 +1,10 @@
+name: Transactions
+form: $/itrail/adtacker/models/transaction/fields.yaml
+modelClass: ItRail\AdTacker\Models\Transaction
+defaultRedirect: itrail/adtacker/transactions
+create:
+    redirect: 'itrail/adtacker/transactions/update/:id'
+    redirectClose: itrail/adtacker/transactions
+update:
+    redirect: itrail/adtacker/transactions
+    redirectClose: itrail/adtacker/transactions

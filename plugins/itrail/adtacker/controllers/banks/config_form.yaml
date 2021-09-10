@@ -1,0 +1,10 @@
+name: Banks
+form: $/itrail/adtacker/models/bank/fields.yaml
+modelClass: ItRail\AdTacker\Models\Bank
+defaultRedirect: itrail/adtacker/banks
+create:
+    redirect: 'itrail/adtacker/banks/update/:id'
+    redirectClose: itrail/adtacker/banks
+update:
+    redirect: itrail/adtacker/banks
+    redirectClose: itrail/adtacker/banks

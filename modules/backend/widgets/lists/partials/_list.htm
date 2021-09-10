@@ -1,5 +1,17 @@
-<div class="control-list list-scrollable" data-control="listwidget">
-    <table class="table data" data-control="rowlink">
+<?php
+    $useRowLink = $this->hasRecordAction();
+
+    $classes = [
+        'list-scrollable',
+    ];
+
+    if ($useRowLink) $classes[] = 'list-rowlink';
+    if (!$showPagination) $classes[] = 'no-pagination';
+?>
+<div
+    class="control-list <?= implode(' ', $classes) ?>"
+    data-control="listwidget">
+    <table class="table data" <?= $useRowLink ? 'data-control="rowlink"' : '' ?>>
         <thead>
             <?= $this->makePartial('list_head_row') ?>
         </thead>
@@ -26,4 +38,6 @@
             </div>
         </div>
     <?php endif ?>
+
+    <?= $this->makePartial('list_datalocker') ?>
 </div>

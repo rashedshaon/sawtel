@@ -1,6 +1,7 @@
 <?php namespace Backend;
 
 use App;
+use Event;
 use Backend;
 use BackendMenu;
 use BackendAuth;
@@ -8,8 +9,12 @@ use System\Classes\MailManager;
 use System\Classes\CombineAssets;
 use System\Classes\SettingsManager;
 use Backend\Classes\WidgetManager;
+use October\Rain\Auth\AuthException;
 use October\Rain\Support\ModuleServiceProvider;
 
+/**
+ * ServiceProvider for Backend module
+ */
 class ServiceProvider extends ModuleServiceProvider
 {
     /**
@@ -44,6 +49,16 @@ class ServiceProvider extends ModuleServiceProvider
     public function boot()
     {
         parent::boot('backend');
+
+        $this->bootAuth();
+    }
+
+    /**
+     * bootAuth boots authentication based logic.
+     */
+    protected function bootAuth(): void
+    {
+        AuthException::setDefaultErrorMessage(__('backend::lang.auth.invalid_login'));
     }
 
     /**
@@ -71,7 +86,6 @@ class ServiceProvider extends ModuleServiceProvider
             $combiner->registerBundle('~/modules/backend/formwidgets/codeeditor/assets/js/build.js');
             $combiner->registerBundle('~/modules/backend/formwidgets/nestedform/assets/less/nestedform.less');
             $combiner->registerBundle('~/modules/backend/formwidgets/richeditor/assets/js/build-plugins.js');
-            $combiner->registerBundle('~/modules/backend/formwidgets/colorpicker/assets/less/colorpicker.less');
             $combiner->registerBundle('~/modules/backend/formwidgets/permissioneditor/assets/less/permissioneditor.less');
             $combiner->registerBundle('~/modules/backend/formwidgets/sensitive/assets/less/sensitive.less');
 
@@ -93,12 +107,12 @@ class ServiceProvider extends ModuleServiceProvider
         BackendMenu::registerCallback(function ($manager) {
             $manager->registerMenuItems('October.Backend', [
                 'dashboard' => [
-                    'label'       => 'backend::lang.dashboard.menu_label',
-                    'icon'        => 'icon-dashboard',
-                    'iconSvg'     => 'modules/backend/assets/images/dashboard-icon.svg',
-                    'url'         => Backend::url('backend'),
+                    'label' => 'backend::lang.dashboard.menu_label',
+                    'icon' => 'icon-dashboard',
+                    'iconSvg' => 'modules/backend/assets/images/dashboard-icon.svg',
+                    'url' => Backend::url('backend'),
                     'permissions' => ['backend.access_dashboard'],
-                    'order'       => 10
+                    'order' => 10
                 ]
             ]);
         });
@@ -126,27 +140,27 @@ class ServiceProvider extends ModuleServiceProvider
             $manager->registerPermissions('October.Backend', [
                 'backend.access_dashboard' => [
                     'label' => 'system::lang.permissions.view_the_dashboard',
-                    'tab'   => 'system::lang.permissions.name'
+                    'tab' => 'system::lang.permissions.name'
                 ],
                 'backend.manage_default_dashboard' => [
                     'label' => 'system::lang.permissions.manage_default_dashboard',
-                    'tab'   => 'system::lang.permissions.name',
+                    'tab' => 'system::lang.permissions.name',
                 ],
                 'backend.manage_users' => [
                     'label' => 'system::lang.permissions.manage_other_administrators',
-                    'tab'   => 'system::lang.permissions.name'
+                    'tab' => 'system::lang.permissions.name'
                 ],
                 'backend.manage_preferences' => [
                     'label' => 'system::lang.permissions.manage_preferences',
-                    'tab'   => 'system::lang.permissions.name'
+                    'tab' => 'system::lang.permissions.name'
                 ],
                 'backend.manage_editor' => [
                     'label' => 'system::lang.permissions.manage_editor',
-                    'tab'   => 'system::lang.permissions.name'
+                    'tab' => 'system::lang.permissions.name'
                 ],
                 'backend.manage_branding' => [
                     'label' => 'system::lang.permissions.manage_branding',
-                    'tab'   => 'system::lang.permissions.name'
+                    'tab' => 'system::lang.permissions.name'
                 ]
             ]);
         });
@@ -180,56 +194,89 @@ class ServiceProvider extends ModuleServiceProvider
      */
     protected function registerBackendSettings()
     {
+        Event::listen('system.settings.extendItems', function ($manager) {
+            if ((!$user = BackendAuth::getUser()) || !$user->isSuperUser()) {
+                $manager->removeSettingItem('October.Backend', 'adminroles');
+            }
+        });
+
         SettingsManager::instance()->registerCallback(function ($manager) {
             $manager->registerSettingItems('October.Backend', [
+                'administrators' => [
+                    'label' => 'backend::lang.user.menu_label',
+                    'description' => 'backend::lang.user.menu_description',
+                    'category' => SettingsManager::CATEGORY_TEAM,
+                    'icon' => 'octo-icon-users',
+                    'url' => Backend::url('backend/users'),
+                    'permissions' => ['backend.manage_users'],
+                    'order' => 400
+                ],
+                'adminroles' => [
+                    'label' => 'backend::lang.user.role.menu_label',
+                    'description' => 'backend::lang.user.role.menu_description',
+                    'category' => SettingsManager::CATEGORY_TEAM,
+                    'icon' => 'octo-icon-id-card-1',
+                    'url' => Backend::url('backend/userroles'),
+                    'permissions' => ['backend.manage_users'],
+                    'order' => 410
+                ],
+                'admingroups' => [
+                    'label' => 'backend::lang.user.group.menu_label',
+                    'description' => 'backend::lang.user.group.menu_description',
+                    'category' => SettingsManager::CATEGORY_TEAM,
+                    'icon' => 'octo-icon-user-group',
+                    'url' => Backend::url('backend/usergroups'),
+                    'permissions' => ['backend.manage_users'],
+                    'order' => 420
+                ],
                 'branding' => [
-                    'label'       => 'backend::lang.branding.menu_label',
+                    'label' => 'backend::lang.branding.menu_label',
                     'description' => 'backend::lang.branding.menu_description',
-                    'category'    => SettingsManager::CATEGORY_SYSTEM,
-                    'icon'        => 'octo-icon-paint-brush-1',
-                    'class'       => 'Backend\Models\BrandSetting',
+                    'category' => SettingsManager::CATEGORY_SYSTEM,
+                    'icon' => 'octo-icon-paint-brush-1',
+                    'class' => 'Backend\Models\BrandSetting',
                     'permissions' => ['backend.manage_branding'],
-                    'order'       => 500,
-                    'keywords'    => 'brand style'
+                    'order' => 500,
+                    'keywords' => 'brand style'
                 ],
                 'editor' => [
-                    'label'       => 'backend::lang.editor.menu_label',
+                    'label' => 'backend::lang.editor.menu_label',
                     'description' => 'backend::lang.editor.menu_description',
-                    'category'    => SettingsManager::CATEGORY_SYSTEM,
-                    'icon'        => 'icon-code',
-                    'class'       => 'Backend\Models\EditorSetting',
+                    'category' => SettingsManager::CATEGORY_SYSTEM,
+                    'icon' => 'icon-code',
+                    'class' => 'Backend\Models\EditorSetting',
                     'permissions' => ['backend.manage_editor'],
-                    'order'       => 500,
-                    'keywords'    => 'html code class style'
+                    'order' => 500,
+                    'keywords' => 'html code class style'
                 ],
                 'myaccount' => [
-                    'label'       => 'backend::lang.myaccount.menu_label',
+                    'label' => 'backend::lang.myaccount.menu_label',
                     'description' => 'backend::lang.myaccount.menu_description',
-                    'category'    => SettingsManager::CATEGORY_MYSETTINGS,
-                    'icon'        => 'octo-icon-user-account',
-                    'url'         => Backend::url('backend/users/myaccount'),
-                    'order'       => 500,
-                    'context'     => 'mysettings',
-                    'keywords'    => 'backend::lang.myaccount.menu_keywords'
+                    'category' => SettingsManager::CATEGORY_MYSETTINGS,
+                    'icon' => 'octo-icon-user-account',
+                    'url' => Backend::url('backend/users/myaccount'),
+                    'order' => 500,
+                    'context' => 'mysettings',
+                    'keywords' => 'backend::lang.myaccount.menu_keywords'
                 ],
                 'preferences' => [
-                    'label'       => 'backend::lang.backend_preferences.menu_label',
+                    'label' => 'backend::lang.backend_preferences.menu_label',
                     'description' => 'backend::lang.backend_preferences.menu_description',
-                    'category'    => SettingsManager::CATEGORY_MYSETTINGS,
-                    'icon'        => 'octo-icon-app-window',
-                    'url'         => Backend::url('backend/preferences'),
+                    'category' => SettingsManager::CATEGORY_MYSETTINGS,
+                    'icon' => 'octo-icon-app-window',
+                    'url' => Backend::url('backend/preferences'),
                     'permissions' => ['backend.manage_preferences'],
-                    'order'       => 510,
-                    'context'     => 'mysettings'
+                    'order' => 510,
+                    'context' => 'mysettings'
                 ],
                 'access_logs' => [
-                    'label'       => 'backend::lang.access_log.menu_label',
+                    'label' => 'backend::lang.access_log.menu_label',
                     'description' => 'backend::lang.access_log.menu_description',
-                    'category'    => SettingsManager::CATEGORY_LOGS,
-                    'icon'        => 'octo-icon-lock',
-                    'url'         => Backend::url('backend/accesslogs'),
+                    'category' => SettingsManager::CATEGORY_LOGS,
+                    'icon' => 'octo-icon-lock',
+                    'url' => Backend::url('backend/accesslogs'),
                     'permissions' => ['system.access_logs'],
-                    'order'       => 920
+                    'order' => 920
                 ]
             ]);
         });

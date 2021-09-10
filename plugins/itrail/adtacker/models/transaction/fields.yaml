@@ -1,0 +1,15 @@
+fields:
+    user_id:
+        label: User
+        showSearch: true
+        span: auto
+        type: dropdown
+    type_id:
+        label: Type
+        showSearch: true
+        span: left
+        type: dropdown
+    amount:
+        label: Amount
+        span: left
+        type: number

@@ -1,5 +1,6 @@
 <?php namespace Backend\Classes;
 
+use System;
 use BackendMenu;
 use System\Classes\SettingsManager;
 
@@ -29,12 +30,20 @@ class SettingsController extends Controller
     }
 
     /**
-     * findSettingsContextFromClass converts a controller class to a plugin code
+     * findSettingsContextFromClass converts a controller class to a plugin code,
+     * if the author code is a module name, then we assume it is a module.
      */
     protected function findSettingsContextFromClass()
     {
         $classNameArray = explode('\\', get_class($this));
 
-        return array_shift($classNameArray).'.'.array_shift($classNameArray);
+        $authorCode = array_shift($classNameArray);
+        $pluginCode = array_shift($classNameArray);
+
+        if (System::hasModule($authorCode)) {
+            return 'October.'.$authorCode;
+        }
+
+        return $authorCode.'.'.$pluginCode;
     }
 }

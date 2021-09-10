@@ -31,8 +31,7 @@ class UserRole extends RoleBase
      * @var array hasMany relationship
      */
     public $hasMany = [
-        'users' => [User::class, 'key' => 'role_id'],
-        'users_count' => [User::class, 'key' => 'role_id', 'count' => true]
+        'users' => [User::class, 'key' => 'role_id']
     ];
 
     /**

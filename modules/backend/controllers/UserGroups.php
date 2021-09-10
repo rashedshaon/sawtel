@@ -1,35 +1,39 @@
 <?php namespace Backend\Controllers;
 
-use BackendMenu;
-use Backend\Classes\Controller;
-use System\Classes\SettingsManager;
+use Backend\Classes\SettingsController;
 
 /**
- * Backend user groups controller
+ * UserGroups controller
  *
  * @package october\backend
  * @author Alexey Bobkov, Samuel Georges
  *
  */
-class UserGroups extends Controller
+class UserGroups extends SettingsController
 {
     /**
      * @var array Extensions implemented by this controller.
      */
     public $implement = [
         \Backend\Behaviors\FormController::class,
-        \Backend\Behaviors\ListController::class
+        \Backend\Behaviors\ListController::class,
+        \Backend\Behaviors\RelationController::class
     ];
 
     /**
-     * @var array `FormController` configuration.
+     * @var array formConfig for `FormController` configuration.
      */
     public $formConfig = 'config_form.yaml';
 
     /**
-     * @var array `ListController` configuration.
+     * @var array listConfig for `ListController` configuration.
      */
     public $listConfig = 'config_list.yaml';
+
+    /**
+     * @var array relationConfig for `RelationController` configuration.
+     */
+    public $relationConfig = 'config_relation.yaml';
 
     /**
      * @var array Permissions required to view this page.
@@ -37,13 +41,7 @@ class UserGroups extends Controller
     public $requiredPermissions = ['backend.manage_users'];
 
     /**
-     * Constructor.
+     * @var string settingsItemCode determines the settings code
      */
-    public function __construct()
-    {
-        parent::__construct();
-
-        BackendMenu::setContext('October.System', 'system', 'users');
-        SettingsManager::setContext('October.System', 'administrators');
-    }
+    public $settingsItemCode = 'admingroups';
 }

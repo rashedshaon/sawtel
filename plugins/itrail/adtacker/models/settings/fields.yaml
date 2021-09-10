@@ -1,0 +1,37 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+    registration_point:
+        span: left
+        label: Registration Point
+        type: number
+    referral_point:
+        span: left
+        label: Referral Point
+        type: number
+    daily_income_point:
+        span: left
+        label: Daily Income Point
+        type: number
+    fund_transfer_fee:
+        span: left
+        label: Fund Transfer Fee (%)
+        type: number
+    minimum_balance_to_transfer:
+        span: left
+        label: Minimum Balance To Transfer
+        type: number
+    minimum_balance_to_withdraw:
+        span: left
+        label: Minimum Balance To Withdraw
+        type: number
+    fund_transfer_transaction_status:
+        span: left
+        label: Fund Transfer Transaction Status
+        type: dropdown
+    withdraw_transaction_status:
+        span: left
+        label: Withdraw Transaction Status
+        type: dropdown

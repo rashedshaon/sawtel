@@ -4,3 +4,87 @@ plugin:
     author: 'IT Rail'
     icon: oc-icon-diamond
     homepage: ''
+permissions:
+    itrail.adtracker.manage_banks:
+        tab: 'AD Tracker'
+        label: 'Manage banks'
+    itrail.adtracker.manage_slides:
+        tab: 'AD Tracker'
+        label: 'Manage slides'
+    itrail.adtracker.manage_products:
+        tab: 'AD Tracker'
+        label: 'Manage products'
+    itrail.adtracker.manage_transactions:
+        tab: 'AD Tracker'
+        label: 'Manage transactions'
+    itrail.adtracker.manage_transaction_types:
+        tab: 'AD Tracker'
+        label: 'Manage transaction types'
+    itrail.adtracker.manage_orders:
+        tab: 'AD Tracker'
+        label: 'Manage orders'
+    itrail.adtracker.manage_order_statuses:
+        tab: 'AD Tracker'
+        label: 'Manage order statuses'
+    itrail.adtracker.manage_withdraw_requests:
+        tab: 'AD Tracker'
+        label: 'Manage withdraw requests'
+    itrail.adtracker.manage_settings:
+        tab: 'AD Tracker'
+        label: 'Manage Setting'
+navigation:
+    main-menu-item:
+        label: 'AD Tracker'
+        url: itrail/adtacker/slides
+        icon: icon-area-chart
+        permissions:
+            - itrail.adtracker.manage_slides
+        sideMenu:
+            side-menu-item:
+                label: Slides
+                url: itrail/adtacker/slides
+                icon: icon-photo
+                permissions:
+                    - itrail.adtracker.manage_slides
+            side-menu-item2:
+                label: Products
+                url: itrail/adtacker/products
+                icon: icon-simplybuilt
+                permissions:
+                    - itrail.adtracker.manage_products
+            side-menu-item3:
+                label: Orders
+                url: itrail/adtacker/orders
+                icon: icon-shopping-cart
+                permissions:
+                    - itrail.adtracker.manage_orders
+            side-menu-item5:
+                label: 'Withdraw Requests'
+                url: itrail/adtacker/withdrawrequests
+                icon: icon-tasks
+                permissions:
+                    - itrail.adtracker.manage_withdraw_requests
+            side-menu-item4:
+                label: Tranctions
+                url: itrail/adtacker/transactions
+                icon: icon-bar-chart
+                permissions:
+                    - itrail.adtracker.manage_transactions
+            side-menu-item6:
+                label: 'Order Statuses'
+                url: itrail/adtacker/orderstatuses
+                icon: icon-check-square-o
+                permissions:
+                    - itrail.adtracker.manage_order_statuses
+            side-menu-item7:
+                label: 'Transaction Types'
+                url: itrail/adtacker/transactiontypes
+                icon: icon-check-square-o
+                permissions:
+                    - itrail.adtracker.manage_transaction_types
+            side-menu-item8:
+                label: Banks
+                url: itrail/adtacker/banks
+                icon: icon-bank
+                permissions:
+                    - itrail.adtracker.manage_banks

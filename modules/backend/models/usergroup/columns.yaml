@@ -18,7 +18,7 @@ columns:
 
     users_count:
         label: backend::lang.user.group.users_count
-        relation: users_count
-        valueFrom: count
-        default: 0
+        relation: users
+        relationCount: true
+        type: number
         sortable: false

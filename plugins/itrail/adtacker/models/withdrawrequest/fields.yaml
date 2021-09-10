@@ -1,0 +1,26 @@
+fields:
+    user_id:
+        label: User
+        span: auto
+        type: dropdown
+    bank_id:
+        label: Bank
+        span: left
+        type: dropdown
+    account_no:
+        label: 'Account No.'
+        span: left
+        type: text
+    amount:
+        label: Amount
+        span: left
+        type: number
+    status:
+        label: Status
+        options:
+            - Pending
+            - Accepted
+            - Cancel
+        showSearch: true
+        span: left
+        type: dropdown

@@ -1,0 +1,14 @@
+columns:
+    id:
+        label: ID
+        type: number
+        width: 100px
+    name:
+        label: Name
+        type: text
+        searchable: true
+        sortable: true
+    action:
+        label: Action
+        type: text
+        sortable: true

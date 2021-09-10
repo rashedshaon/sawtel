@@ -1,19 +1,25 @@
 {% set posts = __SELF__.posts %}
 
-{% for post in posts %}
-<div class="col-md-2">
-    <div class="single-post">
-        <figure>
-            <img src="{{ post.featuredPhoto(160, 106) }}" alt="{{ post.title }}">
-        </figure>
-        <h6><a href="{{ post.url }}">{{ post.title }}</a></h6>
-        <a href="{{ post.title }}" class="read-more">Learn more >></a>
-    </div>
-</div>
-{% else %}
-    <div class="no-data">{{ __SELF__.noPostsMessage }}</div>
-{% endfor %}
+<ul class="post-list">
+    {% for post in posts %}
+        <li>
+            <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
 
+            <p class="info">
+                Posted
+                {% if post.categories.count %} in {% endif %}
+                {% for category in post.categories %}
+                    <a href="{{ category.url }}">{{ category.name }}</a>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+                on {{ post.published_at|date('M d, Y') }}
+            </p>
+
+            <p class="excerpt">{{ post.summary|raw }}</p>
+        </li>
+    {% else %}
+        <li class="no-data">{{ __SELF__.noPostsMessage }}</li>
+    {% endfor %}
+</ul>
 
 {% if posts.lastPage > 1 %}
     <ul class="pagination">

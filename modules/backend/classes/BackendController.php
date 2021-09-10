@@ -69,7 +69,7 @@ class BackendController extends ControllerBase
     protected function runCmsPage($url)
     {
         if (System::hasModule('Cms')) {
-            return App::make('Cms\Classes\Controller')->run($url);
+            return App::make(\Cms\Classes\Controller::class)->run($url);
         }
         else {
             return Response::make(View::make('backend::404'), 404);

@@ -358,6 +358,29 @@
     }
 }
 
+.field-action {
+    border-bottom: 1px solid @color-form-field-border;
+    padding: 10px 0 5px;
+    margin-top: -20px;
+
+    h5 {
+        margin-bottom: 5px;
+    }
+
+    p {
+        color: @color-help-block-text;
+    }
+
+    .field-action-button {
+        margin-top: 15px;
+        margin-bottom: 10px;
+
+        @media (min-width: 992px) {
+            text-align: right;
+        }
+    }
+}
+
 .form-group.section-field.collapsed {
     .field-section.is-collapsible > h4:before {
         .scaleAxes(1, -1);

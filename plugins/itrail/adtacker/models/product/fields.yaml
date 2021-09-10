@@ -1,0 +1,31 @@
+fields:
+    name:
+        label: Name
+        span: auto
+        type: text
+    photo:
+        label: Photo
+        mode: image
+        useCaption: true
+        thumbOptions:
+            mode: crop
+            extension: auto
+        span: auto
+        type: fileupload
+    description:
+        label: Description
+        size: small
+        span: left
+        type: textarea
+    price:
+        label: Price
+        span: left
+        type: number
+    is_published:
+        label: 'Is Published?'
+        span: left
+        type: switch
+    is_featured:
+        label: 'Is Featured?'
+        span: left
+        type: switch

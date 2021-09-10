@@ -1,0 +1,10 @@
+name: OrderStatuses
+form: $/itrail/adtacker/models/orderstatus/fields.yaml
+modelClass: ItRail\AdTacker\Models\OrderStatus
+defaultRedirect: itrail/adtacker/orderstatuses
+create:
+    redirect: 'itrail/adtacker/orderstatuses/update/:id'
+    redirectClose: itrail/adtacker/orderstatuses
+update:
+    redirect: itrail/adtacker/orderstatuses
+    redirectClose: itrail/adtacker/orderstatuses

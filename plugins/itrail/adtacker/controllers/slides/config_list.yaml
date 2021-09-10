@@ -1,0 +1,12 @@
+list: $/itrail/adtacker/models/slide/columns.yaml
+modelClass: ItRail\AdTacker\Models\Slide
+title: Slides
+noRecordsMessage: 'backend::lang.list.no_records'
+showSetup: true
+showCheckboxes: true
+recordsPerPage: 20
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'itrail/adtacker/slides/update/:id'

@@ -11,7 +11,6 @@ use Config;
 use Storage;
 use Redirect;
 use October\Rain\Database\Attach\File as FileModel;
-use System\Helpers\Cache as CacheHelper;
 use ApplicationException;
 use Resizer;
 
@@ -129,7 +128,7 @@ class ResizeImages
      */
     protected function getResizedUrl($outputFilename = 'undefined.css')
     {
-        $combineAction = \System\Classes\Controller::class.'@resize';
+        $combineAction = \System\Classes\SystemController::class.'@resize';
         $actionExists = Route::getRoutes()->getByAction($combineAction) !== null;
 
         if ($actionExists) {

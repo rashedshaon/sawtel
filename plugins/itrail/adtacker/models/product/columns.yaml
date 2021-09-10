@@ -1,0 +1,32 @@
+columns:
+    id:
+        label: Id
+        type: number
+        invisible: true
+    name:
+        label: Name
+        type: text
+        searchable: true
+        sortable: true
+    description:
+        label: Description
+        type: text
+        invisible: true
+    price:
+        label: Price
+        type: text
+        sortable: true
+    is_featured:
+        label: Is Featured?
+        type: switch
+        sortable: true
+    is_published:
+        label: Is Published?
+        type: switch
+        sortable: true
+    created_at:
+        label: Created At
+        type: datetime
+    updated_at:
+        label: Updated At
+        type: datetime

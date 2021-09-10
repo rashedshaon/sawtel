@@ -1,0 +1,26 @@
+columns:
+    id:
+        label: ID
+        type: number
+    code:
+        label: Code
+        type: text
+    user_id:
+        label: User
+        type: text
+        select: name
+        relation: user
+    address:
+        label: Address
+        type: text
+    status_id:
+        label: Status
+        type: text
+        select: name
+        relation: status
+    created_at:
+        label: Created At
+        type: datetime
+    updated_at:
+        label: Updated At
+        type: datetime

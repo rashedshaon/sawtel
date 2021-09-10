@@ -9,11 +9,11 @@ class BuilderTableUpdateBackendUsers extends Migration
     {
         Schema::table('backend_users', function($table)
         {
-            $table->string('name')->after('id');
-            $table->string('phone')->after('login');
+            $table->string('name')->nullable()->after('id');
+            $table->string('phone')->nullable()->after('login');
             $table->text('address')->nullable()->after('email');
             $table->string('nid')->nullable()->after('email');
-            $table->integer('referral_id')->after('email');
+            $table->integer('referral_id')->nullable()->after('email');
 
             $table->index('phone');
             $table->index('email');

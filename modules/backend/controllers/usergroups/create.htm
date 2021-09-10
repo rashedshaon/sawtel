@@ -1,6 +1,5 @@
 <?php Block::put('breadcrumb') ?>
     <ul>
-        <li><a href="<?= Backend::url('backend/users') ?>"><?= e(trans('backend::lang.user.menu_label')) ?></a></li>
         <li><a href="<?= Backend::url('backend/usergroups') ?>"><?= e(trans('backend::lang.user.group.menu_label')) ?></a></li>
         <li><?= e(trans($this->pageTitle)) ?></li>
     </ul>
@@ -24,7 +23,7 @@
                     class="btn btn-primary">
                     <?= e(trans('backend::lang.form.create')) ?>
                 </button>
-                <button 
+                <button
                     type="button"
                     data-request="onSave"
                     data-request-data="close:1"

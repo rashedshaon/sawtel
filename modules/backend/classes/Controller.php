@@ -146,6 +146,13 @@ class Controller extends Extendable
             parent::__construct();
         }
 
+        /*
+         * Impersonate backend role
+         */
+        if (BackendAuth::isRoleImpersonator()) {
+            (new \Backend\Widgets\RoleImpersonator($this))->bindToController();
+        }
+
         $this->registerVueComponent(\Backend\VueComponents\Modal::class);
     }
 

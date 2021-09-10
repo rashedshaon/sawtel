@@ -206,23 +206,17 @@ class Themes extends Controller
     {
         $theme = $this->findThemeObject();
         $newDirName = trim(post('new_dir_name'));
-        $sourcePath = $theme->getPath();
-        $destinationPath = themes_path().'/'.$newDirName;
 
         if (!preg_match('/^[a-z0-9\_\-]+$/i', $newDirName)) {
             throw new ValidationException(['new_dir_name' => trans('cms::lang.theme.dir_name_invalid')]);
         }
 
-        if (File::isDirectory($destinationPath)) {
+        if (!ThemeManager::instance()->duplicateTheme($theme->getDirName(), $newDirName)) {
             throw new ValidationException(['new_dir_name' => trans('cms::lang.theme.dir_name_taken')]);
         }
 
-        File::copyDirectory($sourcePath, $destinationPath);
-        $newTheme = CmsTheme::load($newDirName);
-        $newName = $newTheme->getConfigValue('name') . ' - Copy';
-        $newTheme->writeConfig(['name' => $newName]);
-
         Flash::success(trans('cms::lang.theme.duplicate_theme_success'));
+
         return Redirect::refresh();
     }
 

@@ -11,11 +11,11 @@
 
             if ($cb.data('oc-space-timestamp') == e.timeStamp)
                 return
-            
+
             if ($cb.get(0).disabled) {
                 return false
             }
-            
+
             $cb.get(0).checked = !$cb.get(0).checked
             $cb.data('oc-space-timestamp', e.timeStamp)
             $cb.trigger('change')

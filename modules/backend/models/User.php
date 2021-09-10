@@ -2,6 +2,7 @@
 
 use Mail;
 use Event;
+use Config;
 use Backend;
 use October\Rain\Auth\Models\User as UserBase;
 
@@ -24,10 +25,10 @@ class User extends UserBase
      * @var array rules for validation
      */
     public $rules = [
-        'email' => 'required|between:6,255|email|unique:backend_users',
+        'email' => 'required|between:6,255|email',
         'login' => 'required|between:2,255|unique:backend_users',
-        'password' => 'required:create|between:4,255|confirmed',
-        'password_confirmation' => 'required_with:password|between:4,255'
+        // 'password' => 'required:create|between:4,255|confirmed',
+        // 'password_confirmation' => 'required_with:password|between:4,255'
     ];
 
     /**
@@ -81,11 +82,7 @@ class User extends UserBase
      */
     public function getPersistCode()
     {
-        // Option A: @todo config
-        // return parent::getPersistCode();
-
-        // Option B:
-        if (!$this->persist_code) {
+        if (!$this->persist_code || Config::get('backend.force_single_session', false)) {
             return parent::getPersistCode();
         }
 
@@ -206,16 +203,16 @@ class User extends UserBase
         // Create admin
         $user = new self;
         $user->forceFill([
-            'last_name'             => array_get($data, 'last_name'),
-            'first_name'            => array_get($data, 'first_name'),
-            'email'                 => array_get($data, 'email'),
-            'login'                 => array_get($data, 'login'),
-            'password'              => array_get($data, 'password'),
+            'last_name' => array_get($data, 'last_name'),
+            'first_name' => array_get($data, 'first_name'),
+            'email' => array_get($data, 'email'),
+            'login' => array_get($data, 'login'),
+            'password' => array_get($data, 'password'),
             'password_confirmation' => array_get($data, 'password_confirmation'),
-            'permissions'           => [],
-            'is_superuser'          => true,
-            'is_activated'          => true,
-            'role_id'               => $roleId
+            'permissions' => [],
+            'is_superuser' => true,
+            'is_activated' => true,
+            'role_id' => $roleId
         ]);
         $user->save();
 

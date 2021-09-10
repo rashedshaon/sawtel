@@ -9,7 +9,7 @@ use System\Models\PluginVersion;
 use System\Classes\CombineAssets;
 
 /**
- * Asset Maker Trait
+ * AssetMaker Trait
  * Adds asset based methods to a class
  *
  * @package october\system
@@ -28,12 +28,12 @@ trait AssetMaker
     protected $assetBundles = ['js' => [], 'css' => []];
 
     /**
-     * @var string Specifies a path to the asset directory.
+     * @var string assetPath specifies a pulic or relative path to the asset directory.
      */
     public $assetPath;
 
     /**
-     * Disables the use, and subequent broadcast, of assets. This is useful
+     * flushAssets disables the use, and subequent broadcast, of assets. This is useful
      * to call during an AJAX request to speed things up. This method works
      * by specifically targeting the hasAssetsDefined method.
      * @return void
@@ -252,7 +252,7 @@ trait AssetMaker
     }
 
     /**
-     * Locates a file based on it's definition. If the file starts with
+     * getAssetPath locates a file based on it's definition. If the file starts with
      * a forward slash, it will be returned in context of the application public path,
      * otherwise it will be returned in context of the asset path.
      * @param string $fileName File to load.
@@ -271,10 +271,6 @@ trait AssetMaker
 
         if (substr($fileName, 0, 1) == '/' || $assetPath === null) {
             return $fileName;
-        }
-
-        if (method_exists($this, 'getAssetPathOverride')) {
-            return $this->getAssetPathOverride($fileName);
         }
 
         return $assetPath . '/' . $fileName;
@@ -314,11 +310,9 @@ trait AssetMaker
     }
 
     /**
-     * Internal helper, get asset scheme
-     * @param string $asset Specifies a path (URL) to the asset.
-     * @return string
+     * getAssetScheme is an internal helper to get the asset scheme.
      */
-    protected function getAssetScheme($asset)
+    protected function getAssetScheme(string $asset): string
     {
         if (starts_with($asset, ['//', 'http://', 'https://'])) {
             return $asset;
@@ -332,8 +326,7 @@ trait AssetMaker
     }
 
     /**
-     * Removes duplicate assets from the entire collection.
-     * @return void
+     * removeDuplicates removes duplicate assets from the entire collection.
      */
     protected function removeDuplicates()
     {

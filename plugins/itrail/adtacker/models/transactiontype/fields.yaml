@@ -1,0 +1,13 @@
+fields:
+    name:
+        label: Name
+        span: auto
+        type: text
+    action:
+        label: Action
+        options:
+            Debit: Debit
+            Credit: Credit
+        showSearch: true
+        span: left
+        type: dropdown

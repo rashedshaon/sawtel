@@ -134,9 +134,9 @@ class ListController extends ControllerBehavior
         /*
          * Prepare the list widget
          */
-        $columnConfig = $this->makeConfig($listConfig->list);
-        $columnConfig->model = $model;
-        $columnConfig->alias = $definition;
+        $widgetConfig = $this->makeConfig($listConfig->list);
+        $widgetConfig->model = $model;
+        $widgetConfig->alias = $definition;
 
         /*
          * Prepare the columns configuration
@@ -152,21 +152,25 @@ class ListController extends ControllerBehavior
             'showSorting',
             'showSetup',
             'showCheckboxes',
-            'showTree',
-            'treeExpanded',
             'customViewPath',
         ];
 
         foreach ($configFieldsToTransfer as $field) {
             if (isset($listConfig->{$field})) {
-                $columnConfig->{$field} = $listConfig->{$field};
+                $widgetConfig->{$field} = $listConfig->{$field};
             }
         }
 
         /*
          * List Widget with extensibility
          */
-        $widget = $this->makeWidget('Backend\Widgets\Lists', $columnConfig);
+        $structureConfig = $this->makeListStructureConfig($widgetConfig, $listConfig);
+        if ($structureConfig) {
+            $widget = $this->makeWidget(\Backend\Widgets\ListStructure::class, $structureConfig);
+        }
+        else {
+            $widget = $this->makeWidget(\Backend\Widgets\Lists::class, $widgetConfig);
+        }
 
         $widget->bindEvent('list.extendColumns', function () use ($widget) {
             $this->controller->listExtendColumns($widget);
@@ -208,7 +212,7 @@ class ListController extends ControllerBehavior
         if (isset($listConfig->toolbar)) {
             $toolbarConfig = $this->makeConfig($listConfig->toolbar);
             $toolbarConfig->alias = $widget->alias . 'Toolbar';
-            $toolbarWidget = $this->makeWidget('Backend\Widgets\Toolbar', $toolbarConfig);
+            $toolbarWidget = $this->makeWidget(\Backend\Widgets\Toolbar::class, $toolbarConfig);
             $toolbarWidget->bindToController();
             $toolbarWidget->cssClasses[] = 'list-header';
 
@@ -221,6 +225,10 @@ class ListController extends ControllerBehavior
                     return $widget->onRefresh();
                 });
 
+                // Linkage for JS plugins
+                $searchWidget->listWidgetId = $widget->getId();
+
+                // Pass search options
                 $widget->setSearchOptions([
                     'mode' => $searchWidget->mode,
                     'scope' => $searchWidget->scope,
@@ -241,7 +249,7 @@ class ListController extends ControllerBehavior
 
             $filterConfig = $this->makeConfig($listConfig->filter);
             $filterConfig->alias = $widget->alias . 'Filter';
-            $filterWidget = $this->makeWidget('Backend\Widgets\Filter', $filterConfig);
+            $filterWidget = $this->makeWidget(\Backend\Widgets\Filter::class, $filterConfig);
             $filterWidget->bindToController();
 
             /*
@@ -272,6 +280,33 @@ class ListController extends ControllerBehavior
         }
 
         return $widget;
+    }
+
+    /**
+     * makeListStructureConfig
+     */
+    protected function makeListStructureConfig(object $widgetConfig, object $config): ?object
+    {
+        // @deprecated old API
+        if (isset($config->showTree)) {
+            $widgetConfig->showTree = $config->showTree;
+            $widgetConfig->treeExpanded = $config->treeExpanded ?? false;
+            $widgetConfig->showReorder = false;
+            return $widgetConfig;
+        }
+
+        // New API
+        if (!isset($config->structure)) {
+            return null;
+        }
+
+        if (is_array($config->structure)) {
+            foreach ($config->structure as $key => $value) {
+                $widgetConfig->$key = $value;
+            }
+        }
+
+        return $widgetConfig;
     }
 
     /**

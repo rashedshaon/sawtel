@@ -5,6 +5,8 @@
     </IfModule>
 
     RewriteEngine On
+    RewriteCond %{HTTP:Authorization} ^(.*)
+    RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
 
     ##
     ## You may need to uncomment the following line for some hosting environments,

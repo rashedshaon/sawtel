@@ -1,19 +1,19 @@
 <?php namespace Backend\Controllers;
 
 use View;
+use Backend;
 use Response;
-use BackendMenu;
-use Backend\Classes\Controller;
-use System\Classes\SettingsManager;
+use BackendAuth;
+use Backend\Classes\SettingsController;
 
 /**
- * Backend user groups controller
+ * UserRoles controller
  *
  * @package october\backend
  * @author Alexey Bobkov, Samuel Georges
  *
  */
-class UserRoles extends Controller
+class UserRoles extends SettingsController
 {
     /**
      * @var array Extensions implemented by this controller.
@@ -39,14 +39,16 @@ class UserRoles extends Controller
     public $requiredPermissions = ['backend.manage_users'];
 
     /**
-     * Constructor.
+     * @var string settingsItemCode determines the settings code
+     */
+    public $settingsItemCode = 'adminroles';
+
+    /**
+     * __construct the controller
      */
     public function __construct()
     {
         parent::__construct();
-
-        BackendMenu::setContext('October.System', 'system', 'users');
-        SettingsManager::setContext('October.System', 'administrators');
 
         /*
          * Only super users can access
@@ -59,7 +61,7 @@ class UserRoles extends Controller
     }
 
     /**
-     * Add available permission fields to the Role form.
+     * formExtendFields adds available permission fields to the Role form.
      */
     public function formExtendFields($form)
     {
@@ -70,10 +72,9 @@ class UserRoles extends Controller
     }
 
     /**
-     * Adds the permissions editor widget to the form.
-     * @return array
+     * generatePermissionsField adds the permissions editor widget to the form.
      */
-    protected function generatePermissionsField()
+    protected function generatePermissionsField(): array
     {
         return [
             'permissions' => [
@@ -82,5 +83,17 @@ class UserRoles extends Controller
                 'mode' => 'checkbox'
             ]
         ];
+    }
+
+    /**
+     * onImpersonateRole
+     */
+    public function onImpersonateRole($roleId = null)
+    {
+        if ($role = $this->formFindModelObject($roleId)) {
+            BackendAuth::impersonateRole($role);
+        }
+
+        return Backend::redirect('');
     }
 }

@@ -705,9 +705,4 @@ class Post extends Model
 
         return $url;
     }
-
-    public function featuredPhoto($imageWidth = null, $imageHeight = null)
-    {
-        return isset($this->featured_images[0]) ? (($imageHeight && $imageWidth) ? $this->featured_images[0]->getThumb($imageWidth, $imageHeight, ['mode' => 'crop']) : $this->featured_images[0]->getPath()) :  (($imageHeight && $imageWidth) ? "https://dummyimage.com/$imageWidth"."x"."$imageHeight/e3e3e3/d5aa6d.jpg&text=++Sawtel++" : "https://dummyimage.com/200x200/e3e3e3/d5aa6d.jpg&text=++Sawtel++");
-    }
 }

@@ -28,8 +28,7 @@ class UserGroup extends GroupBase
      * @var array belongsToMany relationship
      */
     public $belongsToMany = [
-        'users' => [User::class, 'table' => 'backend_users_groups'],
-        'users_count' => [User::class, 'table' => 'backend_users_groups', 'count' => true]
+        'users' => [User::class, 'table' => 'backend_users_groups']
     ];
 
     /**

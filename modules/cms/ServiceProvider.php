@@ -25,6 +25,7 @@ class ServiceProvider extends ModuleServiceProvider
     {
         parent::register('cms');
 
+        $this->registerConsole();
         $this->registerComponents();
         $this->registerThemeLogging();
         $this->registerCombinerEvents();
@@ -64,6 +65,19 @@ class ServiceProvider extends ModuleServiceProvider
         if (App::runningInBackend()) {
             $this->bootBackendLocalization();
         }
+    }
+
+    /**
+     * Register command line specifics
+     */
+    protected function registerConsole()
+    {
+        $this->registerConsoleCommand('theme.install', \Cms\Console\ThemeInstall::class);
+        $this->registerConsoleCommand('theme.remove', \Cms\Console\ThemeRemove::class);
+        $this->registerConsoleCommand('theme.list', \Cms\Console\ThemeList::class);
+        $this->registerConsoleCommand('theme.use', \Cms\Console\ThemeUse::class);
+        $this->registerConsoleCommand('theme.copy', \Cms\Console\ThemeCopy::class);
+        $this->registerConsoleCommand('theme.check', \Cms\Console\ThemeCheck::class);
     }
 
     /**

@@ -1,0 +1,10 @@
+name: Products
+form: $/itrail/adtacker/models/product/fields.yaml
+modelClass: ItRail\AdTacker\Models\Product
+defaultRedirect: itrail/adtacker/products
+create:
+    redirect: 'itrail/adtacker/products/update/:id'
+    redirectClose: itrail/adtacker/products
+update:
+    redirect: itrail/adtacker/products
+    redirectClose: itrail/adtacker/products

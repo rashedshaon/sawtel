@@ -39,7 +39,7 @@ use Illuminate\Http\RedirectResponse;
  */
 class Controller
 {
-    use \System\Traits\AssetMaker;
+    use \Cms\Traits\ThemeAssetMaker;
     use \System\Traits\EventEmitter;
     use \System\Traits\ResponseMaker;
     use \System\Traits\SecurityController;
@@ -110,7 +110,7 @@ class Controller
     protected $partialStack;
 
     /**
-     * Creates the controller.
+     * __construct the controller.
      * @param \Cms\Classes\Theme $theme Specifies the CMS theme.
      * If the theme is not specified, the current active theme used.
      */
@@ -130,7 +130,7 @@ class Controller
     }
 
     /**
-     * Finds and serves the requested page.
+     * run finds and serves the requested page.
      * If the page cannot be found, returns the page with the URL /404.
      * If the /404 page doesn't exist, returns the system 404 page.
      * If the parameter is null, the current URL used. If it is not
@@ -263,7 +263,7 @@ class Controller
     }
 
     /**
-     * Renders a page in its entirety, including component initialization.
+     * render a page in its entirety, including component initialization.
      * AJAX will be disabled for this process.
      * @param string $pageFile Specifies the CMS page file name to run.
      * @param array  $parameters  Routing parameters.
@@ -286,7 +286,7 @@ class Controller
     }
 
     /**
-     * Runs a page directly from its object and supplied parameters.
+     * runPage runs a page directly from its object and supplied parameters.
      * @param \Cms\Classes\Page $page Specifies the CMS page to run.
      * @return string
      */
@@ -705,7 +705,7 @@ class Controller
     }
 
     /**
-     * Executes the page, layout, component and plugin AJAX handlers.
+     * execAjaxHandlers executes the page, layout, component and plugin AJAX handlers.
      * @return mixed Returns the AJAX Response object or null.
      */
     protected function execAjaxHandlers()
@@ -1341,48 +1341,6 @@ class Controller
         return $this->layout;
     }
 
-    /**
-     * getThemeAssetPath returns the public directory for theme assets
-     */
-    protected function getThemeAssetPath(string $relativePath = null): string
-    {
-        // Determine directory name for asset
-        $dirName = $this->theme->getDirName();
-
-        if (
-            $relativePath !== null &&
-            $this->theme->useParentAsset($relativePath) &&
-            ($parentTheme = $this->theme->getParentTheme())
-        ) {
-            $dirName = $parentTheme->getDirName();
-        }
-
-        // Configuration for theme asset location
-        $assetUrl = Config::get('system.themes_asset_url');
-
-        if ($assetUrl === null) {
-            $assetUrl = Config::get('app.asset_url').'/themes';
-        }
-
-        // Build path
-        $path = $assetUrl . '/' . $dirName;
-
-        if ($relativePath !== null) {
-            $path = $assetUrl . '/' . $dirName . '/' . $relativePath;
-        }
-
-        return $path;
-    }
-
-    /**
-     * getAssetPathOverride interfaces with AssetMaker to modify its logic
-     * to respect parent theme asset locations
-     */
-    protected function getAssetPathOverride($fileName): string
-    {
-        return $this->getThemeAssetPath($fileName);
-    }
-
     //
     // Page helpers
     //
@@ -1468,33 +1426,6 @@ class Controller
         }
 
         return Url::asset($this->getThemeAssetPath($url));
-    }
-
-    /**
-     * getMultipleThemeAssetPaths checks combiner paths in the theme
-     * and rewrites them to parent assets, if necessary
-     */
-    protected function getMultipleThemeAssetPaths(array $urls): array
-    {
-        $theme = $this->getTheme();
-
-        if (!$theme->hasParentTheme()) {
-            return $urls;
-        }
-
-        foreach ($urls as &$url) {
-            // Combiner alias
-            if (substr($url, 0, 1) === '@') {
-                continue;
-            }
-
-            // Parent asset
-            if ($theme->useParentAsset($url)) {
-                $url = $theme->getParentTheme()->getPath().'/'.$url;
-            }
-        }
-
-        return $urls;
     }
 
     /**

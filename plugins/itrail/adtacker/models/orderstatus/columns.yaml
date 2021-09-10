@@ -1,0 +1,11 @@
+columns:
+    id:
+        label: ID
+        type: number
+        width: 100px
+    name:
+        label: Name
+        type: partial
+    color:
+        label: Color
+        type: partial

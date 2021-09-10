@@ -35,19 +35,32 @@ function unregisterServiceWorkers() {
  * Path helpers
  */
 
-if ($.oc === undefined)
-    $.oc = {}
+if ($.oc === undefined) {
+    $.oc = {};
+}
 
 $.oc.backendUrl = function(url) {
-    var backendBasePath = $('meta[name="backend-base-path"]').attr('content')
+    var backendBasePath = $('meta[name="backend-base-path"]').attr('content');
 
-    if (!backendBasePath)
-        return url
+    if (!backendBasePath) {
+        return url;
+    }
 
-    if (url.substr(0, 1) == '/')
-        url = url.substr(1)
+    if (url.substr(0, 1) == '/') {
+        url = url.substr(1);
+    }
 
-    return backendBasePath + '/' + url
+    return backendBasePath + '/' + url;
+}
+
+$.oc.backendCalculateTopContainerOffset = function() {
+    var height = $('#layout-mainmenu > .main-menu-container').outerHeight();
+
+    if ($('#layout-banner-area').length) {
+        height += $('#layout-banner-area').outerHeight();
+    }
+
+    return height;
 }
 
 /*

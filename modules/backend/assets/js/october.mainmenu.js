@@ -13,7 +13,7 @@
             $leftMenuExtrasMenu = $leftMenuElement.find('.mainmenu-extras'),
             $mainMenuToolbar = $('.layout-mainmenu [data-control=toolbar]'),
             $menuContainer = $('#layout-mainmenu').closest('.layout-row'),
-            menuHeight = $menuContainer.find('.main-menu-container').outerHeight(),
+            menuHeight = $.oc.backendCalculateTopContainerOffset(),
             responsiveMenu = new $.oc.responsiveMenu(hideMenus),
             leftMenuDebounceTimer = null,
             leftMenuWidth = null,
@@ -81,7 +81,7 @@
                 var submenuPosition = $submenu.position(),
                     menuBottom = $submenu.height() + submenuPosition.top,
                     windowHeight = window.scrollY + $(document.body).height()
-                
+
                 if (menuBottom > windowHeight - 20) {
                     $submenu.css({
                         top: submenuPosition.top - (menuBottom - windowHeight) - 20
@@ -201,13 +201,13 @@
             $menuContainer
                 .find('.mainmenu-submenu-dropdown.show')
                 .removeClass('show')
-            
+
             $(document.body).removeClass('left-menu-submenu-displayed')
         }
 
         function hideMenus(ev, hideAll) {
             var isSubmenuDisplayed = $(document.body).hasClass('left-menu-submenu-displayed')
-            
+
             getOverlay().removeClass('show')
             hideSubmenu()
             removeKeyListener()

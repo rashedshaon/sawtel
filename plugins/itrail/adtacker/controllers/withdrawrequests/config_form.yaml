@@ -1,0 +1,10 @@
+name: WithdrawRequests
+form: $/itrail/adtacker/models/withdrawrequest/fields.yaml
+modelClass: ItRail\AdTacker\Models\WithdrawRequest
+defaultRedirect: itrail/adtacker/withdrawrequests
+create:
+    redirect: 'itrail/adtacker/withdrawrequests/update/:id'
+    redirectClose: itrail/adtacker/withdrawrequests
+update:
+    redirect: itrail/adtacker/withdrawrequests
+    redirectClose: itrail/adtacker/withdrawrequests

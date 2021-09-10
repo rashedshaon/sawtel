@@ -1,0 +1,23 @@
+columns:
+    id:
+        label: Id
+        type: number
+        sortable: false
+    name:
+        label: Name
+        type: text
+        searchable: true
+        sortable: true
+    sort_order:
+        label: Sort Order
+        type: number
+        sortable: true
+    is_published:
+        label: Is Published?
+        type: switch
+    created_at:
+        label: Created At
+        type: datetime
+    updated_at:
+        label: Updated At
+        type: datetime

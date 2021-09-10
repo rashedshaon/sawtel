@@ -33,8 +33,8 @@ use Symfony\Component\Console\Input\InputArgument;
 class OctoberUtil extends Command
 {
     use \Illuminate\Console\ConfirmableTrait;
-    use \System\Console\OctoberUtil\OctoberUtilPatches;
-    use \System\Console\OctoberUtil\OctoberUtilCommands;
+    use \System\Console\OctoberUtilPatches;
+    use \System\Console\OctoberUtilCommands;
 
     /**
      * The console command name.
@@ -53,11 +53,7 @@ class OctoberUtil extends Command
     {
         $command = implode(' ', (array) $this->argument('name'));
         $method = str_replace('.', 'Point', 'util'.studly_case($command));
-
-        $methods = preg_grep('/^util/', get_class_methods(get_called_class()));
-        $list = array_map(function ($item) {
-            return "october:".snake_case($item, " ");
-        }, $methods);
+        $list = $this->getAvailableCommands();
 
         if (!$this->argument('name')) {
             $message = 'There are no commands defined in the "util" namespace.';
@@ -81,6 +77,23 @@ class OctoberUtil extends Command
     }
 
     /**
+     * getAvailableCommands
+     */
+    protected function getAvailableCommands(): array
+    {
+        $methods = preg_grep('/^util/', get_class_methods(get_called_class()));
+        $list = array_map(function ($item) {
+            if (starts_with($item, 'utilPatch')) {
+                return;
+            }
+
+            return "october:".snake_case($item, " ");
+        }, $methods);
+
+        return $list;
+    }
+
+    /**
      * Get the console command arguments.
      * @return array
      */
@@ -99,7 +112,7 @@ class OctoberUtil extends Command
         return [
             ['force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production.'],
             ['debug', null, InputOption::VALUE_NONE, 'Run the operation in debug / development mode.'],
-            ['projectId', null, InputOption::VALUE_REQUIRED, 'Specify a projectId for set project'],
+            ['value', null, InputOption::VALUE_REQUIRED, 'Specify a generic value for the command'],
         ];
     }
 }

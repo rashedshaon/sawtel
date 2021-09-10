@@ -1,0 +1,10 @@
+name: Slides
+form: $/itrail/adtacker/models/slide/fields.yaml
+modelClass: ItRail\AdTacker\Models\Slide
+defaultRedirect: itrail/adtacker/slides
+create:
+    redirect: 'itrail/adtacker/slides/update/:id'
+    redirectClose: itrail/adtacker/slides
+update:
+    redirect: itrail/adtacker/slides
+    redirectClose: itrail/adtacker/slides

@@ -166,8 +166,9 @@ class ThemeManager
     public function getComposerCode(string $dirName): string
     {
         $path = $this->getThemePath($dirName);
+        $file = $path . '/composer.json';
 
-        if (!File::exists($file = $path . '/composer.json')) {
+        if (!$path || !File::exists($file)) {
             return '';
         }
 
@@ -218,6 +219,70 @@ class ThemeManager
     }
 
     /**
+     * duplicateTheme duplicates a theme
+     */
+    public function duplicateTheme(string $dirName, string $newDirName = null): bool
+    {
+        if (!$dirName) {
+            return false;
+        }
+
+        if (!$newDirName) {
+            $newDirName = $dirName . '-copy';
+        }
+
+        $theme = CmsTheme::load($dirName);
+
+        $sourcePath = $theme->getPath();
+        $destinationPath = themes_path().'/'.$newDirName;
+
+        if (File::isDirectory($destinationPath)) {
+            return false;
+        }
+
+        // Duplicate theme
+        File::copyDirectory($sourcePath, $destinationPath);
+
+        // Unlock theme (if required)
+        $this->performUnlockOnTheme($newDirName);
+
+        $newTheme = CmsTheme::load($newDirName);
+        $newName = $newTheme->getConfigValue('name') . ' - Copy';
+        $newTheme->writeConfig(['name' => $newName]);
+
+        return true;
+    }
+
+    /**
+     * createChildTheme will create a child theme
+     */
+    public function createChildTheme(string $dirName, string $newDirName = null): bool
+    {
+        if (!$newDirName) {
+            $newDirName = $dirName . '-child';
+        }
+
+        $themePath = themes_path($dirName);
+        $childPath = themes_path($newDirName);
+        $childYaml = $childPath . '/theme.yaml';
+
+        // Child already exists
+        if (file_exists($childPath)) {
+            return false;
+        }
+
+        // Create child
+        File::makeDirectory($childPath);
+        File::copy($themePath . '/theme.yaml', $childYaml);
+
+        $yaml = Yaml::parseFile($childYaml);
+        $yaml['parent'] = $dirName;
+        File::put($childYaml, Yaml::render($yaml));
+
+        return true;
+    }
+
+    /**
      * deleteTheme completely delete a theme from the system
      */
     public function deleteTheme(string $theme)
@@ -226,9 +291,7 @@ class ThemeManager
             return false;
         }
 
-        if (is_string($theme)) {
-            $theme = CmsTheme::load($theme);
-        }
+        $theme = CmsTheme::load($theme);
 
         if ($theme->isActiveTheme()) {
             throw new ApplicationException(trans('cms::lang.theme.delete_active_theme_failed'));
@@ -313,7 +376,7 @@ class ThemeManager
     }
 
     /**
-     * performLockOnTheme will add a lock file and create a child theme
+     * performLockOnTheme will add a lock file on a theme
      * Returns true if the process was successful
      */
     public function performLockOnTheme(string $dirName): bool
@@ -329,21 +392,24 @@ class ThemeManager
         // Lock theme
         File::put($lockFile, 1);
 
-        $childPath = $themePath . '-child';
-        $childYaml = $childPath . '/theme.yaml';
+        return true;
+    }
 
-        // Child already exists
-        if (file_exists($childPath)) {
-            return true;
+    /**
+     * performUnlockOnTheme will remove the lock file on a theme
+     * Returns true if the process was successful
+     */
+    public function performUnlockOnTheme(string $dirName): bool
+    {
+        $themePath = themes_path($dirName);
+
+        $lockFile = $themePath . '/.themelock';
+        if (!file_exists($lockFile)) {
+            return false;
         }
 
-        // Create child
-        File::makeDirectory($childPath);
-        File::copy($themePath . '/theme.yaml', $childYaml);
-
-        $yaml = Yaml::parseFile($childYaml);
-        $yaml['parent'] = $dirName;
-        File::put($childYaml, Yaml::render($yaml));
+        // Unlock theme
+        File::delete($lockFile);
 
         return true;
     }

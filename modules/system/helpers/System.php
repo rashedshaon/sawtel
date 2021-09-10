@@ -20,14 +20,23 @@ class System
     protected $hasDatabaseCache = null;
 
     /**
+     * listModulesCache helps multiple calls to listModules()
+     */
+    protected $listModulesCache = null;
+
+    /**
      * listModules returns a list of module names that are enabled
      */
     public function listModules(): array
     {
+        if ($this->listModulesCache !== null) {
+            return $this->listModulesCache;
+        }
+
         $loadModules = Config::get('system.load_modules');
 
         // Lazy
-        if ($loadModules === null) {
+        if (!$loadModules) {
             $foundModules = [];
             foreach (File::directories(base_path('modules')) as $dir) {
                 $foundModules[] = ucfirst(basename($dir));
@@ -44,7 +53,9 @@ class System
         }
 
         // System comes first
-        return array_unique(array_merge(['System'], $result));
+        $result = array_unique(array_merge(['System'], $result));
+
+        return $this->listModulesCache = $result;
     }
 
     /**
