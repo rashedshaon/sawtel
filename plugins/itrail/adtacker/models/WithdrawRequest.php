@@ -27,6 +27,12 @@ class WithdrawRequest extends Model
         'user' => ['Backend\Models\User', 'key' => 'id', 'otherKey' => 'user_id'],
     ];
 
+    public function getStatusColorAttribute()
+    {
+        $color = ['Pending'=>'primary', 'Accepted'=>'success', 'Cancel'=>'danger'];
+        return $color[$this->status];
+    }
+
     public function getUserIdOptions()
     {
         $options = [

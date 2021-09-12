@@ -107,4 +107,265 @@ class ApiController extends Controller
             'total'             => $data->total(),
        ];
     }
+
+    public function forgetPassword()
+    {
+        $post = post();
+        $rules = [
+            'login' => 'required',
+        ];
+        
+        $messages = [
+            'login.required' => "You must be enter a user name",
+        ];
+
+        $validation = Validator::make($post, $rules, $messages);
+        
+        if ($validation->fails())
+        { 
+            return response()->json(["status" => "error", "msg" => $validation->messages()->all()]);
+        }
+
+        $data = User::where('login', $post['login'])->first();
+        
+        if($data)
+        {
+            $params = [
+                "user" => "",
+                "password" => "",
+            ];
+
+            // Send to address using no name
+            Mail::sendTo('admin@domain.tld', 'itrail.adtracker::mail.reset_password', $params);
+            return response()->json(["status" => "ok", "data" => [], "msg" => "A new password sent to your email ".$data->email]);
+        }
+
+        return response()->json(["status" => "error", "data" => [], "msg" => "No data found with this user name."]);
+    }
+
+    public function getBalance()
+    {
+        $user = [];
+        $data = Transaction::where('user_id', $user->id)->sum('amount');
+        return response()->json(["status" => "ok", "data" => $data, "msg" => "Data Successfully Found"]);
+    }
+
+    public function homeData()
+    {
+        $data = [
+            "slides" => Slide::isPublished()->orderBy('sort_order', 'asc')->get()
+                        ->map(function($data){
+                            return [
+                                "id" => $data->id,
+                                "name" => $data->name,
+                                "photo" => $data->getPhoto(),
+                                "created_at" => $data->created_at->format('d-m-Y h:i:s A'),
+                                "updated_at" => $data->updated_at->format('d-m-Y h:i:s A'),
+                            ];
+                        }),
+            "products" => Product::isPublished()->isFeatured()->orderBy('update_at', 'desc')->get()
+                            ->map(function($data){
+                                return [
+                                    "id" => $data->id,
+                                    "name" => $data->name,
+                                    "photo" => $data->getPhoto(),
+                                    "price" => $data->price,
+                                    "description" => $data->description,
+                                    "created_at" => $data->created_at->format('d-m-Y h:i:s A'),
+                                    "updated_at" => $data->updated_at->format('d-m-Y h:i:s A'),
+                                ];
+                            }),
+        ];
+        return response()->json(["status" => "ok", "data" => $data, "msg" => "Data Successfully Found"]);
+    }
+
+    public function shopProducts()
+    {
+        $products =  Product::isPublished()->isFeatured()->orderBy('created_at', 'desc')->paginate();
+        $data = $products->map(function($data){
+                                return [
+                                    "id" => $data->id,
+                                    "name" => $data->name,
+                                    "photo" => $data->getPhoto(),
+                                    "price" => $data->price,
+                                    "description" => $data->description,
+                                    "created_at" => $data->created_at->format('d-m-Y h:i:s A'),
+                                    "updated_at" => $data->updated_at->format('d-m-Y h:i:s A'),
+                                ];
+                            });
+
+        return response()->json(["status" => "ok", "data" => $data, "msg" => count($data)." data found", 'pagination' => $this->pagination($products)]);
+    }
+
+    public function todaysIncome()
+    {
+        $user = [];
+        $type_id = Settings::get('daily_income_status');
+        $transaction = Transaction::where('user_id', $user->id)->where('type_id', $type_id)->whereDate('created_at', Carbon::today())->get()->first();
+        if($transaction)
+        {
+            return response()->json(["status" => "ok", "data" => $transaction->amount, "msg" => "Successfully Collected Today"]);
+        }
+        
+        return response()->json(["status" => "error", "data" => $transaction->amount, "msg" => "Still not collected"]);
+    }
+
+    public function submitIncome()
+    {
+        $user = [];
+        $type_id = Settings::get('daily_income_status');
+        $amount = Settings::get('daily_income_point');
+        
+
+        $transaction = new Transaction();
+        $transaction->user_id = $user->id;
+        $transaction->type_id = $type_id;
+        $transaction->amount  = $amount;
+        $transaction->save();
+        
+        return response()->json(["status" => "ok", "data" => $transaction->amount, "msg" => "Successfully Collected Today"]);
+    }
+
+    public function getBanks()
+    {
+        $data = Bank::orderBy('name', 'asc')->get();
+
+        return response()->json(["status" => "ok", "data" => $data, "msg" => "Successfully Found Data"]);
+    }
+
+    public function withdrawRequests()
+    {
+        $user = [];
+        $withdraw_requests =  WithdrawRequest::where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate();
+        $data = $products->map(function($data){
+                                return [
+                                    "id" => $data->id,
+                                    "amount" => $data->amount,
+                                    "bank" => $data->bank->name,
+                                    "account_no" => $data->account_no,
+                                    "status" => $data->status,
+                                    "status_color" => $data->status_color,
+                                    "created_at" => $data->created_at->format('d-m-Y h:i A'),
+                                    "updated_at" => $data->updated_at->format('d-m-Y h:i A'),
+                                ];
+                            });
+
+        return response()->json(["status" => "ok", "data" => $data, "msg" => count($data)." data found", 'pagination' => $this->pagination($withdraw_requests)]);
+    }
+
+    public function submitWithdrawRequests()
+    {
+        $user = [];
+
+        $post = post();
+        $rules = [
+            'bank_id' => 'required',
+            'account_no' => 'required',
+            'amount' => 'required',
+        ];
+        
+        $messages = [
+            'bank_id.required' => "Please select a bank.",
+            'account_no.required' => "Please give account number.",
+            'amount.required' => "Please type amount.",
+        ];
+
+        $validation = Validator::make($post, $rules, $messages);
+        
+        if ($validation->fails())
+        { 
+            return response()->json(["status" => "error", "msg" => $validation->messages()->all()]);
+        }
+
+        $current_balance = Transaction::where('user_id', $user->id)->sum('amount');
+        $minimum_balance = Settings::get('minimum_balance_to_withdraw');
+
+        if($current_balance >= $minimum_balance)
+        {
+            $withdraw_requests = new WithdrawRequest();
+            $withdraw_requests->user_id = $user->id;
+            $withdraw_requests->bank_id = $post['bank_id'];
+            $withdraw_requests->account_no = $post['account_no'];
+            $withdraw_requests->amount = $post['amount'];
+            $withdraw_requests->save();
+
+            return response()->json(["status" => "ok", "data" => [], "msg" => "Request Successfully Submitted"]);
+        }
+
+        return response()->json(["status" => "error", "data" => [], "msg" => "Not enough money to withdraw."]);
+    }
+
+    public function submitOrder()
+    {
+        $user = [];
+        
+        $post = post();
+
+        $status_id = Settings::get('default_order_status');
+
+        $order = new Order();
+        $order->code = date('Hdmyms');
+        $order->user_id = $user->id;
+        $order->address = $post['address'];
+        $order->status_id = $status_id;
+        $order->save();
+
+        foreach($post['items'] as $item)
+        {
+            $order_item = new OrderItem();
+            $order_item->order_id = $order->id;
+            $order_item->product_id = $item['product_id'];
+            $order_item->name = $item['name'];
+            $order_item->quantity = $item['quantity'];
+            $order_item->price = $item['price'];
+            $order_item->save();
+        }
+
+        
+
+
+
+
+        return response()->json(["status" => "ok", "data" => [], "msg" => "Request Successfully Submitted"]);
+
+    }
+
+    public function getOrders()
+    {
+        
+    }
+
+    public function transactionSummery()
+    {
+        
+    }
+
+    public function transactionDetails()
+    {
+        
+    }
+    public function accounts()
+    {
+        
+    }
+
+    public function updateProfile()
+    {
+        
+    }
+
+    public function updatePhoto()
+    {
+        
+    }
+
+    public function sendFund()
+    {
+        
+    }
+
+    public function aboutUs()
+    {
+        
+    }
 }

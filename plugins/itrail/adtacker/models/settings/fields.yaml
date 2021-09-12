@@ -35,3 +35,11 @@ fields:
         span: left
         label: Withdraw Transaction Status
         type: dropdown
+    daily_income_status:
+        span: left
+        label: Daily Income Status
+        type: dropdown
+    default_order_status:
+        span: left
+        label: Default Order Status
+        type: dropdown

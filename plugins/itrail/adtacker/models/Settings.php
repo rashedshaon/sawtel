@@ -21,6 +21,8 @@ class Settings extends Model
         $this->minimum_balance_to_withdraw = "";
         $this->fund_transfer_transaction_status = "";
         $this->withdraw_transaction_status = "";
+        $this->daily_income_status = "";
+        $this->default_order_status = "";
     }
 
     public function getFundTransferTransactionStatusOptions()
@@ -43,6 +45,34 @@ class Settings extends Model
             null => 'Select type',
         ];
         $items = new TransactionType();
+
+        $items->each(function ($item) use (&$options) {
+            return $options[$item->id] = $item->name;
+        });
+
+        return $options;
+    }
+
+    public function getDailyIncomeStatusOptions()
+    {
+        $options = [
+            null => 'Select type',
+        ];
+        $items = new TransactionType();
+
+        $items->each(function ($item) use (&$options) {
+            return $options[$item->id] = $item->name;
+        });
+
+        return $options;
+    }
+
+    public function getDefaultOrderStatusOptions()
+    {
+        $options = [
+            null => 'Select order status',
+        ];
+        $items = new OrderStatus();
 
         $items->each(function ($item) use (&$options) {
             return $options[$item->id] = $item->name;
