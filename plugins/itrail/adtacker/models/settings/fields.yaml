@@ -1,45 +1,50 @@
-# ===================================
-#  Field Definitions
-# ===================================
-
 fields:
     registration_point:
         span: left
-        label: Registration Point
+        label: 'Registration Point'
         type: number
+    about_us:
+        label: 'About Us'
+        size: large
+        span: auto
+        type: richeditor
     referral_point:
         span: left
-        label: Referral Point
+        label: 'Referral Point'
         type: number
     daily_income_point:
         span: left
-        label: Daily Income Point
+        label: 'Daily Income Point'
         type: number
     fund_transfer_fee:
         span: left
-        label: Fund Transfer Fee (%)
+        label: 'Fund Transfer Fee (%)'
         type: number
     minimum_balance_to_transfer:
         span: left
-        label: Minimum Balance To Transfer
+        label: 'Minimum Balance To Transfer'
         type: number
     minimum_balance_to_withdraw:
         span: left
-        label: Minimum Balance To Withdraw
+        label: 'Minimum Balance To Withdraw'
         type: number
     fund_transfer_transaction_status:
         span: left
-        label: Fund Transfer Transaction Status
+        label: 'Fund Transfer Transaction Status'
+        type: dropdown
+    fund_receive_transaction_status:
+        span: left
+        label: 'Fund Transfer Transaction Status'
         type: dropdown
     withdraw_transaction_status:
         span: left
-        label: Withdraw Transaction Status
+        label: 'Withdraw Transaction Status'
         type: dropdown
     daily_income_status:
         span: left
-        label: Daily Income Status
+        label: 'Daily Income Status'
         type: dropdown
     default_order_status:
         span: left
-        label: Default Order Status
+        label: 'Default Order Status'
         type: dropdown

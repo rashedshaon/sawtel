@@ -13,6 +13,7 @@ class Settings extends Model
 
     public function initSettingsData()
     {
+        $this->about_us = "";
         $this->registration_point = "";
         $this->referral_point = "";
         $this->daily_income_point = "";
@@ -20,12 +21,27 @@ class Settings extends Model
         $this->minimum_balance_to_transfer = "";
         $this->minimum_balance_to_withdraw = "";
         $this->fund_transfer_transaction_status = "";
+        $this->fund_receive_transaction_status = "";
         $this->withdraw_transaction_status = "";
         $this->daily_income_status = "";
         $this->default_order_status = "";
     }
 
     public function getFundTransferTransactionStatusOptions()
+    {
+        $options = [
+            null => 'Select type',
+        ];
+        $items = new TransactionType();
+
+        $items->each(function ($item) use (&$options) {
+            return $options[$item->id] = $item->name;
+        });
+
+        return $options;
+    }
+
+    public function getFundReceiveTransactionStatusOptions()
     {
         $options = [
             null => 'Select type',

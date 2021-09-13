@@ -237,7 +237,7 @@ class ApiController extends Controller
     {
         $user = [];
         $withdraw_requests =  WithdrawRequest::where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate();
-        $data = $products->map(function($data){
+        $data = $withdraw_requests->map(function($data){
                                 return [
                                     "id" => $data->id,
                                     "amount" => $data->amount,
@@ -280,25 +280,25 @@ class ApiController extends Controller
         $current_balance = Transaction::where('user_id', $user->id)->sum('amount');
         $minimum_balance = Settings::get('minimum_balance_to_withdraw');
 
-        if($current_balance >= $minimum_balance)
+        if($current_balance < $minimum_balance)
         {
-            $withdraw_requests = new WithdrawRequest();
-            $withdraw_requests->user_id = $user->id;
-            $withdraw_requests->bank_id = $post['bank_id'];
-            $withdraw_requests->account_no = $post['account_no'];
-            $withdraw_requests->amount = $post['amount'];
-            $withdraw_requests->save();
-
-            return response()->json(["status" => "ok", "data" => [], "msg" => "Request Successfully Submitted"]);
+            return response()->json(["status" => "error", "data" => [], "msg" => "Balance should be over $minimum_balance to withdraw."]);
         }
 
-        return response()->json(["status" => "error", "data" => [], "msg" => "Not enough money to withdraw."]);
+        $withdraw_requests = new WithdrawRequest();
+        $withdraw_requests->user_id = $user->id;
+        $withdraw_requests->bank_id = $post['bank_id'];
+        $withdraw_requests->account_no = $post['account_no'];
+        $withdraw_requests->amount = $post['amount'];
+        $withdraw_requests->save();
+
+        return response()->json(["status" => "ok", "data" => [], "msg" => "Request Successfully Submitted"]);
     }
 
     public function submitOrder()
     {
         $user = [];
-        
+
         $post = post();
 
         $status_id = Settings::get('default_order_status');
@@ -321,32 +321,106 @@ class ApiController extends Controller
             $order_item->save();
         }
 
-        
-
-
-
-
         return response()->json(["status" => "ok", "data" => [], "msg" => "Request Successfully Submitted"]);
-
     }
 
     public function getOrders()
     {
-        
+        $user = [];
+        $orders =  Order::where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate();
+        $data = $orders->map(function($data){
+                                return [
+                                    "id" => $data->id,
+                                    "code" => $data->code,
+                                    "total_price" => $data->total_price,
+                                    "total_quantity" => $data->total_quantity,
+                                    "address" => $data->address->name,
+                                    "status" => $data->status->name,
+                                    "status_color" => $data->status->color,
+                                    "items" => $data->items()->get()->map(function($data){
+                                        return [
+                                            "id" => $data->id,
+                                            "name" => $data->name,
+                                            "quantity" => $data->quantity,
+                                            "price" => $data->price,
+                                        ];
+                                    }),
+                                    "created_at" => $data->created_at->format('d-m-Y h:i A'),
+                                    "updated_at" => $data->updated_at->format('d-m-Y h:i A'),
+                                ];
+                            });
+
+        return response()->json(["status" => "ok", "data" => $data, "msg" => count($data)." data found", 'pagination' => $this->pagination($orders)]);
     }
 
     public function transactionSummery()
     {
-        
+        $data = [
+            "income" => Transaction::select('*', DB::raw("count(*) as count, sum('amount') as total_amount"))
+                        ->where('user_id', $user->id)
+                        ->where('amount', '>', 0)
+                        ->groupBy('type_id')->get()
+                        ->map(function($data){
+                            return [
+                                "id" => $data->id,
+                                "name" => $data->type->name,
+                                "total_amount" => $data->total_amount,
+                                "count" => $data->count,
+                                "created_at" => $data->created_at->format('d-m-Y h:i:s A'),
+                                "updated_at" => $data->updated_at->format('d-m-Y h:i:s A'),
+                            ];
+                        }),
+            "expense" => Transaction::select('*', DB::raw("count(*) as count, sum('amount') as total_amount"))
+                        ->where('user_id', $user->id)
+                        ->where('amount', '<', 0)
+                        ->groupBy('type_id')->get()
+                        ->map(function($data){
+                            return [
+                                "id" => $data->id,
+                                "name" => $data->type->name,
+                                "total_amount" => $data->total_amount,
+                                "count" => $data->count,
+                                "created_at" => $data->created_at->format('d-m-Y h:i:s A'),
+                                "updated_at" => $data->updated_at->format('d-m-Y h:i:s A'),
+                            ];
+                        }),
+        ];
+        return response()->json(["status" => "ok", "data" => $data, "msg" => "Data Successfully Found"]);
     }
 
     public function transactionDetails()
     {
-        
+        $user = [];
+        $transactions =  Transaction::where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate();
+        $data = $transactions->map(function($data){
+                                return [
+                                    "id" => $data->id,
+                                    "name" => $data->type->name,
+                                    "amount" => $data->amount,
+                                    "created_at" => $data->created_at->format('d-m-Y h:i A'),
+                                    "updated_at" => $data->updated_at->format('d-m-Y h:i A'),
+                                ];
+                            });
+
+        return response()->json(["status" => "ok", "data" => $data, "msg" => count($data)." data found", 'pagination' => $this->pagination($transactions)]);
     }
+
     public function accounts()
     {
-        
+        $user = [];
+        $accounts =  User::where('phone', $user->phone)->orderBy('created_at', 'desc')->paginate();
+        $data = $accounts->map(function($data){
+                                return [
+                                    "id" => $data->id,
+                                    "name" => $data->name,
+                                    "login" => $data->login,
+                                    "referrer" => $data->referrer->name,
+                                    "created_at" => $data->created_at->format('d-m-Y h:i A'),
+                                    "updated_at" => $data->updated_at->format('d-m-Y h:i A'),
+                                ];
+                            });
+
+        return response()->json(["status" => "ok", "data" => $data, "msg" => count($data)." data found", 'pagination' => $this->pagination($accounts)]);
     }
 
     public function updateProfile()
@@ -361,11 +435,62 @@ class ApiController extends Controller
 
     public function sendFund()
     {
+        $user = [];
+
+        $post = post();
+        $rules = [
+            'login' => 'required',
+            'amount' => 'required',
+        ];
         
+        $messages = [
+            'login.required' => "Please type a user name.",
+            'amount.required' => "Please type an amount.",
+        ];
+
+        $validation = Validator::make($post, $rules, $messages);
+        
+        if ($validation->fails())
+        { 
+            return response()->json(["status" => "error", "msg" => $validation->messages()->all()]);
+        }
+
+        $receiver = User::where('login', $post['login'])->get()->first();
+
+        if(!$receiver)
+        {
+            return response()->json(["status" => "error", "data" => [], "msg" => "User not found to send money."]);
+        }
+
+        $minimum_balance = Settings::get('minimum_balance_to_transfer');
+        $current_balance = Transaction::where('user_id', $user->id)->sum('amount');
+
+        if($current_balance < $minimum_balance)
+        {
+            return response()->json(["status" => "error", "data" => [], "msg" => "Balance should be over $minimum_balance to withdraw."]);
+        }
+
+        $fund_transfer_id = Settings::get('fund_transfer_transaction_status');
+        $fund_receive_id = Settings::get('fund_receive_transaction_status');
+
+        $transaction = new Transaction();
+        $transaction->user_id = $user->id;
+        $transaction->type_id = $fund_transfer_id;
+        $transaction->amount = $post['amount'];
+        $transaction->save();
+
+        $transaction = new Transaction();
+        $transaction->user_id = $receiver->id;
+        $transaction->type_id = $fund_receive_id;
+        $transaction->amount = $post['amount'];
+        $transaction->save();
+
+        return response()->json(["status" => "ok", "data" => [], "msg" => "Fund Successfully Sent"]);
     }
 
     public function aboutUs()
     {
-        
+        $data = Settings::get('about_us');
+        return response()->json(["status" => "ok", "data" => $data, "msg" => "Data Successfully Found"]);
     }
 }

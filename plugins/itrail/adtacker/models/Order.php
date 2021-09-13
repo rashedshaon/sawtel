@@ -25,4 +25,18 @@ class Order extends Model
         'status' => ['ItRail\AdTacker\Models\OrderStatus', 'key' => 'id', 'otherKey' => 'status_id'],
         'user' => ['Backend\Models\User', 'key' => 'id', 'otherKey' => 'user_id'],
     ];
+
+    public $hasMany = [
+        'items' => ['ItRail\AdTacker\Models\OrderItem', 'key' => 'order_id', 'otherKey' => 'id'],
+    ];
+
+    public function getTotalQuantityAttribute()
+    {
+        return $this->items()->sum('quantity');
+    }
+
+    public function getTotalAmountAttribute()
+    {
+        return $this->items()->sum('price');
+    }
 }

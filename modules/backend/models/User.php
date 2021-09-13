@@ -42,9 +42,10 @@ class User extends UserBase
         'deleted_at',
     ];
 
-    /**
-     * belongsToMany relation
-     */
+    public $hasOne = [
+        'referrer' => ['Backend\Models\User', 'key' => 'id', 'otherKey' => 'referral_id'],
+    ];
+
     public $belongsToMany = [
         'groups' => [UserGroup::class, 'table' => 'backend_users_groups']
     ];
