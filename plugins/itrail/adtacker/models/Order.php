@@ -39,4 +39,9 @@ class Order extends Model
     {
         return $this->items()->sum('price');
     }
+
+    public function getTotalAmountLabelAttribute()
+    {
+        return number_format($this->items()->sum('price'));
+    }
 }

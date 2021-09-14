@@ -16,11 +16,11 @@ Route::group(['prefix' => 'api'], function() {
         try {
             // verify the credentials and create a token for the user
             if (! $token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'invalid_credentials'], 401);
+                return response()->json(["status" => "error", "data" => [],  "msg" => "invalid_credentials"], 401);
             }
         } catch (JWTException $e) {
             // something went wrong
-            return response()->json(['error' => 'could_not_create_token'], 500);
+            return response()->json(["status" => "error", "data" => [],  "msg" => "could_not_create_token"], 500);
         }
 
         $userModel = JWTAuth::authenticate($token);
@@ -34,11 +34,15 @@ Route::group(['prefix' => 'api'], function() {
                 'phone' => $userModel->phone,
                 'email' => $userModel->email,
                 'login' => $userModel->login,
+                'nid' => $userModel->nid,
+                'address' => $userModel->address,
+                'referrer' => $userModel->referrer->name,
                 'is_activated' => $userModel->is_activated,
             ];
         }
+
         // if no errors are encountered we can return a JWT
-        return response()->json(compact('token', 'user'));
+        return response()->json(["status" => "ok", "data" => $user, "token" => $token, "msg" => "Successfully Found Data"]);
     });
 
     Route::post('refresh', function (Request $request) {
@@ -50,15 +54,15 @@ Route::group(['prefix' => 'api'], function() {
         try {
             // attempt to refresh the JWT
             if (!$token = JWTAuth::refresh($token)) {
-                return response()->json(['error' => 'could_not_refresh_token'], 401);
+                return response()->json(["status" => "error", "data" => [],  "msg" => "could_not_refresh_token"], 401);
             }
         } catch (Exception $e) {
             // something went wrong
-            return response()->json(['error' => 'could_not_refresh_token'], 500);
+            return response()->json(["status" => "error", "data" => [],  "msg" => "could_not_refresh_token"], 500);
         }
 
         // if no errors are encountered we can return a new JWT
-        return response()->json(compact('token'));
+        return response()->json(["status" => "ok", "token" => $token, "msg" => "Successfully Found Data"]);
     });
 
     Route::post('invalidate', function (Request $request) {
@@ -72,11 +76,11 @@ Route::group(['prefix' => 'api'], function() {
             JWTAuth::invalidate($token);
         } catch (Exception $e) {
             // something went wrong
-            return response()->json(['error' => 'could_not_invalidate_token'], 500);
+            return response()->json(["status" => "error", "data" => [],  "msg" => "could_not_invalidate_token"], 500);
         }
 
         // if no errors we can return a message to indicate that the token was invalidated
-        return response()->json('token_invalidated');
+        return response()->json(["status" => "ok", "data" => [], "msg" => "Successfully Invalidated"]);
     });
 
     Route::post('signup', function (Request $request) {
@@ -102,15 +106,18 @@ Route::group(['prefix' => 'api'], function() {
                     'phone' => $userModel->phone,
                     'email' => $userModel->email,
                     'login' => $userModel->login,
+                    'nid' => $userModel->nid,
+                    'address' => $userModel->address,
+                    'referrer' => $userModel->referrer->name,
                     'is_activated' => $userModel->is_activated,
                 ];
             }
         } catch (Exception $e) {
-            return Response::json(['error' => $e->getMessage()], 401);
+            return Response::json(["status" => "error", "msg" => $e->getMessage()], 401);
         }
 
         $token = JWTAuth::fromUser($userModel);
 
-        return Response::json(compact('token', 'user'));
+        return Response::json(["status" => "ok", "data" => $user, "token" => $token, "msg" => "Successfully Found Data"]);
     });
 });

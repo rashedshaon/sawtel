@@ -1,6 +1,12 @@
 <?php namespace ItRail\AdTacker\Apis;
 
 use Backend\Classes\Controller;
+use ItRail\AdTacker\Models\Product;
+use ItRail\AdTacker\Models\Slide;
+use ItRail\AdTacker\Models\Transaction;
+use ItRail\AdTacker\Models\WithdrawRequest;
+use ItRail\AdTacker\Models\Bank;
+use ItRail\AdTacker\Models\Order;
 
 
 /**
@@ -18,10 +24,6 @@ use Backend\Classes\Controller;
 
 class ApiController extends Controller
 {
-    const DISTRIBUTOR_ID = 4;
-    const RETAILER_ID = 5;
-    const SELLER_ID = 6;
-
     public function __construct()
     {
         parent::__construct();
@@ -145,7 +147,7 @@ class ApiController extends Controller
 
     public function getBalance()
     {
-        $user = [];
+        $user = JWTAuth::parseToken()->authenticate();
         $data = Transaction::where('user_id', $user->id)->sum('amount');
         return response()->json(["status" => "ok", "data" => $data, "msg" => "Data Successfully Found"]);
     }
@@ -158,18 +160,19 @@ class ApiController extends Controller
                             return [
                                 "id" => $data->id,
                                 "name" => $data->name,
-                                "photo" => $data->getPhoto(),
+                                "photo" => $data->getPhoto(600,380),
                                 "created_at" => $data->created_at->format('d-m-Y h:i:s A'),
                                 "updated_at" => $data->updated_at->format('d-m-Y h:i:s A'),
                             ];
                         }),
-            "products" => Product::isPublished()->isFeatured()->orderBy('update_at', 'desc')->get()
+            "products" => Product::isPublished()->isFeatured()->orderBy('updated_at', 'desc')->get()
                             ->map(function($data){
                                 return [
                                     "id" => $data->id,
                                     "name" => $data->name,
-                                    "photo" => $data->getPhoto(),
+                                    "photo" => $data->getPhoto(300,340),
                                     "price" => $data->price,
+                                    "price_label" => $data->price_label,
                                     "description" => $data->description,
                                     "created_at" => $data->created_at->format('d-m-Y h:i:s A'),
                                     "updated_at" => $data->updated_at->format('d-m-Y h:i:s A'),
@@ -181,13 +184,14 @@ class ApiController extends Controller
 
     public function shopProducts()
     {
-        $products =  Product::isPublished()->isFeatured()->orderBy('created_at', 'desc')->paginate();
+        $products =  Product::isPublished()->orderBy('created_at', 'desc')->paginate();
         $data = $products->map(function($data){
                                 return [
                                     "id" => $data->id,
                                     "name" => $data->name,
                                     "photo" => $data->getPhoto(),
                                     "price" => $data->price,
+                                    "price_label" => $data->price_label,
                                     "description" => $data->description,
                                     "created_at" => $data->created_at->format('d-m-Y h:i:s A'),
                                     "updated_at" => $data->updated_at->format('d-m-Y h:i:s A'),
@@ -199,31 +203,33 @@ class ApiController extends Controller
 
     public function todaysIncome()
     {
-        $user = [];
+        $user = JWTAuth::parseToken()->authenticate();
         $type_id = Settings::get('daily_income_status');
+        $daily_income_point = Settings::get('daily_income_point');
         $transaction = Transaction::where('user_id', $user->id)->where('type_id', $type_id)->whereDate('created_at', Carbon::today())->get()->first();
+
         if($transaction)
         {
-            return response()->json(["status" => "ok", "data" => $transaction->amount, "msg" => "Successfully Collected Today"]);
+            return response()->json(["status" => "ok", "data" => $daily_income_point, "msg" => "Successfully Collected Today"]);
         }
         
-        return response()->json(["status" => "error", "data" => $transaction->amount, "msg" => "Still not collected"]);
+        return response()->json(["status" => "error", "data" => $daily_income_point, "msg" => "Still not collected"]);
     }
 
     public function submitIncome()
     {
-        $user = [];
+        $user = JWTAuth::parseToken()->authenticate();
         $type_id = Settings::get('daily_income_status');
-        $amount = Settings::get('daily_income_point');
+        $daily_income_point = Settings::get('daily_income_point');
         
 
         $transaction = new Transaction();
         $transaction->user_id = $user->id;
         $transaction->type_id = $type_id;
-        $transaction->amount  = $amount;
+        $transaction->amount  = $daily_income_point;
         $transaction->save();
         
-        return response()->json(["status" => "ok", "data" => $transaction->amount, "msg" => "Successfully Collected Today"]);
+        return response()->json(["status" => "ok", "data" => $daily_income_point, "msg" => "Successfully Collected Today"]);
     }
 
     public function getBanks()
@@ -235,7 +241,7 @@ class ApiController extends Controller
 
     public function withdrawRequests()
     {
-        $user = [];
+        $user = JWTAuth::parseToken()->authenticate();
         $withdraw_requests =  WithdrawRequest::where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate();
         $data = $withdraw_requests->map(function($data){
                                 return [
@@ -255,7 +261,7 @@ class ApiController extends Controller
 
     public function submitWithdrawRequests()
     {
-        $user = [];
+        $user = JWTAuth::parseToken()->authenticate();
 
         $post = post();
         $rules = [
@@ -297,7 +303,7 @@ class ApiController extends Controller
 
     public function submitOrder()
     {
-        $user = [];
+        $user = JWTAuth::parseToken()->authenticate();
 
         $post = post();
 
@@ -326,13 +332,14 @@ class ApiController extends Controller
 
     public function getOrders()
     {
-        $user = [];
+        $user = JWTAuth::parseToken()->authenticate();
         $orders =  Order::where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate();
         $data = $orders->map(function($data){
                                 return [
                                     "id" => $data->id,
                                     "code" => $data->code,
                                     "total_price" => $data->total_price,
+                                    "total_price_label" => $data->total_price_label,
                                     "total_quantity" => $data->total_quantity,
                                     "address" => $data->address->name,
                                     "status" => $data->status->name,
@@ -341,8 +348,10 @@ class ApiController extends Controller
                                         return [
                                             "id" => $data->id,
                                             "name" => $data->name,
+                                            "photo" => $data->getPhoto(),
                                             "quantity" => $data->quantity,
                                             "price" => $data->price,
+                                            "price_label" => $data->price_label,
                                         ];
                                     }),
                                     "created_at" => $data->created_at->format('d-m-Y h:i A'),
@@ -355,6 +364,8 @@ class ApiController extends Controller
 
     public function transactionSummery()
     {
+        $user = JWTAuth::parseToken()->authenticate();
+        
         $data = [
             "income" => Transaction::select('*', DB::raw("count(*) as count, sum('amount') as total_amount"))
                         ->where('user_id', $user->id)
@@ -390,7 +401,7 @@ class ApiController extends Controller
 
     public function transactionDetails()
     {
-        $user = [];
+        $user = JWTAuth::parseToken()->authenticate();
         $transactions =  Transaction::where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate();
         $data = $transactions->map(function($data){
                                 return [
@@ -407,7 +418,7 @@ class ApiController extends Controller
 
     public function accounts()
     {
-        $user = [];
+        $user = JWTAuth::parseToken()->authenticate();
         $accounts =  User::where('phone', $user->phone)->orderBy('created_at', 'desc')->paginate();
         $data = $accounts->map(function($data){
                                 return [
@@ -435,7 +446,7 @@ class ApiController extends Controller
 
     public function sendFund()
     {
-        $user = [];
+        $user = JWTAuth::parseToken()->authenticate();
 
         $post = post();
         $rules = [
